@@ -1,7 +1,7 @@
 /* Style the gear icon */
-.wp-block-bootstrap-custom-theme-container-block .components-button {
+.wp-block-bootstrap-custom-theme-container .components-button {
 	position: absolute;
-	top: 10px;
+	top: 0px;
 	right: 10px;
 	z-index: 999;
 }

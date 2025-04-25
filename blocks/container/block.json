@@ -1,6 +1,6 @@
 {
     "apiVersion": 2,
-    "name": "bootstrap-custom-theme/container-block",
+    "name": "bootstrap-custom-theme/container",
     "title": "Bootstrap Container",
     "category": "custom-blocks",
     "icon": "layout",
