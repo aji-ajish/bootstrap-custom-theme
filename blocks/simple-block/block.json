@@ -1,0 +1,18 @@
+{
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/simple-block",
+  "title": "Simple Block",
+  "category": "custom-blocks",
+  "icon": "smiley",
+  "description": "A simple custom block",
+  "textdomain": "bootstrap-custom-theme",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "attributes": {
+    "content": {
+      "type": "string",
+      "source": "html",
+      "selector": "p"
+    }
+  }
+}

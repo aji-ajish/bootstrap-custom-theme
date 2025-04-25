@@ -1,0 +1,24 @@
+{
+  "name": "bootstrap-custom-theme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:simple-block": "wp-scripts build blocks/simple-block/src/index.js --output-path=blocks/simple-block/build",
+    "start:simple-block": "wp-scripts start blocks/simple-block/src/index.js --output-path=blocks/simple-block/build",
+    "build:container-block": "wp-scripts build blocks/container-block/src/index.js --output-path=blocks/container-block/build",
+    "start:container-block": "wp-scripts start blocks/container-block/src/index.js --output-path=blocks/container-block/build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@wordpress/block-editor": "^14.17.0",
+    "@wordpress/blocks": "^14.11.0",
+    "@wordpress/scripts": "^30.15.0"
+  },
+  "dependencies": {
+    "react-draggable": "^4.4.6"
+  }
+}
