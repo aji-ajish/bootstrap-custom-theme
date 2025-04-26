@@ -1,9 +1,12 @@
-import { registerBlockType } from '@wordpress/blocks';
 import Edit from './edit';
 import Save from './save';
 import './style.css';
 
-registerBlockType('bootstrap-custom-theme/container', {
-	edit: Edit,
-	save: Save,
+import { registerBlockType } from '@wordpress/blocks';
+import metadata from '../block.json';
+
+registerBlockType(metadata.name, {
+    ...metadata,
+    edit: Edit,
+    save: Save,
 });

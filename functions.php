@@ -55,5 +55,6 @@ function bootstrap_custom_theme_register_blocks()
 {
     register_block_type_from_metadata(__DIR__ . '/blocks/simple-block');
     register_block_type_from_metadata(__DIR__ . '/blocks/container');
+    register_block_type_from_metadata(__DIR__ . '/blocks/row');
 }
 add_action('init', 'bootstrap_custom_theme_register_blocks');

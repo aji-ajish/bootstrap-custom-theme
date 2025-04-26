@@ -6,9 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:simple-block": "wp-scripts build blocks/simple-block/src/index.js --output-path=blocks/simple-block/build",
-    "start:simple-block": "wp-scripts start blocks/simple-block/src/index.js --output-path=blocks/simple-block/build",
     "build:container": "wp-scripts build blocks/container/src/index.js --output-path=blocks/container/build",
-    "start:container": "wp-scripts start blocks/container/src/index.js --output-path=blocks/container/build"
+    "build:row": "wp-scripts build blocks/row/src/index.js --output-path=blocks/row/build"
   },
   "keywords": [],
   "author": "",
