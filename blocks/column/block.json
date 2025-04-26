@@ -1,0 +1,27 @@
+{
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/column",
+  "title": "Bootstrap Column",
+  "category": "custom-blocks",
+  "icon": "columns",
+  "description": "Responsive Bootstrap Column with multiple breakpoints",
+  "supports": {
+    "html": false,
+    "anchor": false,
+    "customClassName": false,
+    "reusable": false
+  },
+  "attributes": {
+    "breakpoints": {
+      "type": "array",
+      "default": []
+    },
+    "customClass": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/style-index.css",
+  "style": "file:./build/style-index.css"
+}

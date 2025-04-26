@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:simple-block": "wp-scripts build blocks/simple-block/src/index.js --output-path=blocks/simple-block/build",
     "build:container": "wp-scripts build blocks/container/src/index.js --output-path=blocks/container/build",
-    "build:row": "wp-scripts build blocks/row/src/index.js --output-path=blocks/row/build"
+    "build:row": "wp-scripts build blocks/row/src/index.js --output-path=blocks/row/build",
+    "build:column": "wp-scripts build blocks/column/src/index.js --output-path=blocks/column/build"
+
   },
   "keywords": [],
   "author": "",
