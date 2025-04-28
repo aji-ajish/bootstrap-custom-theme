@@ -1,12 +1,12 @@
-import { InnerBlocks } from "@wordpress/block-editor";
+import { InnerBlocks } from '@wordpress/block-editor';
 
 export default function Save({ attributes }) {
-  const { accordionType, numAccordions, accordionClass } = attributes;
+  const { accordionType, numAccordions, accordionClass, ...rest } = attributes;
 
   const accordions = [];
   for (let i = 0; i < numAccordions; i++) {
     accordions.push(
-      <div className="accordion-item" key={i}>
+      <div key={i} className="accordion-item">
         <h2 className="accordion-header" id={`heading${i}`}>
           <button
             className="accordion-button"
@@ -16,7 +16,7 @@ export default function Save({ attributes }) {
             aria-expanded="true"
             aria-controls={`collapse${i}`}
           >
-            Accordion {i + 1}
+            {attributes[`accordionHeading${i}`] || `Accordion ${i + 1}`}
           </button>
         </h2>
         <div

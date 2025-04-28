@@ -1,10 +1,11 @@
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 import Edit from './edit';
 import Save from './save';
 import './style.css';
 
 registerBlockType('bootstrap-custom-theme/accordion', {
-  title: 'Accordion',
+  title: __('Accordion', 'bootstrap-custom-theme'),
   category: 'custom-blocks',
   icon: 'list-view',
   attributes: {

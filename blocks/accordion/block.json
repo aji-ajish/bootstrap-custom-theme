@@ -3,13 +3,13 @@
   "name": "bootstrap-custom-theme/accordion",
   "title": "Bootstrap Accordion",
   "category": "custom-blocks",
-  "icon": "list-view",
+  "icon": "editor-accordion",
   "description": "A Bootstrap-style accordion with customizable settings.",
-  "keywords": ["accordion", "bootstrap", "collapse"],
+  "keywords": ["accordion", "bootstrap"],
   "attributes": {
     "accordionType": {
       "type": "string",
-      "default": "accordion-flush"
+      "default": "accordion"
     },
     "numAccordions": {
       "type": "number",
@@ -18,10 +18,11 @@
     "accordionClass": {
       "type": "string",
       "default": ""
+    },
+    "accordionHeading0": {
+      "type": "string",
+      "default": "Accordion 1 Heading"
     }
-  },
-  "supports": {
-    "jsx": true
   },
   "editorScript": "file:./build/index.js",
   "style": "file:./build/style-index.css"
