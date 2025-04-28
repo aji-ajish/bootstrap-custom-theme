@@ -1,51 +1,85 @@
 import { useBlockProps, InnerBlocks } from "@wordpress/block-editor";
 import { useState, useEffect, useRef } from "@wordpress/element";
+import { Button, TextControl } from "@wordpress/components";
 
-export default function Edit({ attributes, setAttributes }) {
+export default function Edit({ attributes, setAttributes, isSelected }) {
   const { breakpoints, customClass } = attributes;
-  const blockProps = useBlockProps({ className: null });
-  const popupRef = useRef();
-  const [showPopup, setShowPopup] = useState(true);
-  const [tempBreakpoints, setTempBreakpoints] = useState(() => {
-    return breakpoints.length
+  const blockProps = useBlockProps();
+  const popupRef = useRef(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [tempBreakpoints, setTempBreakpoints] = useState(
+    breakpoints.length
       ? breakpoints
-      : [{ breakpoint: "xs", type: "auto", count: 6 }];
-  });
+      : [{ breakpoint: "xs", type: "auto", count: 6 }]
+  );
   const [tempClass, setTempClass] = useState(customClass || "");
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [popupOpenedOnce, setPopupOpenedOnce] = useState(false);
 
+
+  // Calculate center position when popup should show
   useEffect(() => {
-    const header = popupRef.current?.querySelector(".popup-header");
+    if (isSelected && !popupOpenedOnce) {
+      setShowPopup(true);
+      setPopupOpenedOnce(true); // after first time, never auto-open again
+    }
+  }, [isSelected, popupOpenedOnce]);
+
+  // Calculate center position for popup
+  useEffect(() => {
+    if (showPopup && popupRef.current) {
+      const popupWidth = popupRef.current.offsetWidth;
+      const popupHeight = popupRef.current.offsetHeight;
+      const centerX = (window.innerWidth - popupWidth) / 2;
+      const centerY = (window.innerHeight - popupHeight) / 2;
+      setPosition({ x: centerX, y: centerY });
+    }
+  }, [showPopup]);
+
+  // Drag and drop functionality
+  useEffect(() => {
+    if (!showPopup || !popupRef.current) return;
+
+    const header = popupRef.current.querySelector(".popup-header");
     if (!header) return;
 
     let isDragging = false;
-    let offsetX, offsetY;
+    let offsetX = 0;
+    let offsetY = 0;
 
     const onMouseDown = (e) => {
+      if (e.target !== header) return;
       isDragging = true;
       offsetX = e.clientX - popupRef.current.offsetLeft;
       offsetY = e.clientY - popupRef.current.offsetTop;
       document.addEventListener("mousemove", onMouseMove);
       document.addEventListener("mouseup", onMouseUp);
+      document.body.style.userSelect = "none";
     };
 
     const onMouseMove = (e) => {
-      if (isDragging) {
-        popupRef.current.style.left = `${e.clientX - offsetX}px`;
-        popupRef.current.style.top = `${e.clientY - offsetY}px`;
-      }
+      if (!isDragging) return;
+      setPosition({
+        x: e.clientX - offsetX,
+        y: e.clientY - offsetY,
+      });
     };
 
     const onMouseUp = () => {
       isDragging = false;
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
+      document.body.style.userSelect = "";
     };
 
     header.addEventListener("mousedown", onMouseDown);
     return () => {
       header.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      document.body.style.userSelect = "";
     };
-  }, []);
+  }, [showPopup]);
 
   const applySettings = () => {
     setAttributes({
@@ -89,42 +123,38 @@ export default function Edit({ attributes, setAttributes }) {
   };
 
   return (
-    <div {...blockProps} className={renderClassName()}>
+    <div {...blockProps} className={`${blockProps.className} ${renderClassName()}`}>
+      <Button
+        variant="secondary"
+        style={{
+          position: "absolute",
+          top: "0px",
+          right: "-40px",
+          zIndex: 10,
+        }}
+        onClick={() => setShowPopup(!showPopup)}
+      >
+        ⚙️
+      </Button>
+
       {showPopup && (
         <div
           ref={popupRef}
           className="column-popup-inner"
           style={{
-            position: "absolute",
-            top: "20px",
-            left: "20px",
-            background: "#fff",
-            padding: "20px",
-            border: "1px solid #ccc",
-            zIndex: 9999,
-            minWidth: "300px",
+            position: "fixed",
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+            zIndex: 99999,
           }}
         >
-          <div
-            className="popup-header"
-            style={{
-              cursor: "move",
-              background: "#f2f2f2",
-              padding: "6px 10px",
-              margin: "-20px -20px 10px -20px",
-              borderBottom: "1px solid #ccc",
-            }}
-          >
+          <div className="popup-header">
             <strong>Configure Column</strong>
           </div>
 
           <div id="column-settings">
             {tempBreakpoints.map((bp, index) => (
-              <div
-                className="breakpoint-row"
-                key={index}
-                style={{ marginBottom: "8px" }}
-              >
+              <div className="breakpoint-row" key={index}>
                 <select
                   className="breakpoint"
                   value={bp.breakpoint}
@@ -144,7 +174,6 @@ export default function Edit({ attributes, setAttributes }) {
                   onChange={(e) =>
                     updateBreakpoint(index, "type", e.target.value)
                   }
-                  style={{ margin: "0 6px" }}
                 >
                   <option value="auto">Auto</option>
                   <option value="fixed">Fixed</option>
@@ -160,55 +189,35 @@ export default function Edit({ attributes, setAttributes }) {
                     onChange={(e) =>
                       updateBreakpoint(index, "count", parseInt(e.target.value))
                     }
-                    style={{ width: "60px", marginRight: "8px" }}
                   />
                 )}
-                <button
-                  onClick={() => removeBreakpoint(index)}
-                  style={{ color: "red" }}
-                >
-                  ×
-                </button>
+                <button onClick={() => removeBreakpoint(index)}>×</button>
               </div>
             ))}
           </div>
 
-          <button
-            onClick={addBreakpoint}
-            id="add-row"
-            style={{ marginBottom: "10px" }}
-          >
+          <button onClick={addBreakpoint} id="add-row">
             + Add Breakpoint
           </button>
 
-          <div style={{ marginTop: "10px" }}>
+          <div className="custom-class-container">
             <label>
               <strong>Custom Class:</strong>
             </label>
-            <input
-              type="text"
-              id="custom-class"
+            <TextControl
               value={tempClass}
-              onChange={(e) => setTempClass(e.target.value)}
+              onChange={setTempClass}
               placeholder="e.g. my-class"
-              style={{ width: "100%", marginTop: "4px" }}
             />
           </div>
 
-          <div
-            className="popup-actions"
-            style={{
-              marginTop: "15px",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <button id="apply-columns" onClick={applySettings}>
+          <div className="popup-actions">
+            <Button variant="primary" onClick={applySettings}>
               Apply
-            </button>
-            <button id="cancel-columns" onClick={() => setShowPopup(false)}>
+            </Button>
+            <Button variant="secondary" onClick={() => setShowPopup(false)}>
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}

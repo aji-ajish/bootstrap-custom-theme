@@ -1,4 +1,4 @@
-import { useBlockProps, InnerBlocks } from "@wordpress/block-editor";
+import { InnerBlocks } from "@wordpress/block-editor";
 
 export default function Save({ attributes }) {
   const { breakpoints, customClass } = attributes;
@@ -18,9 +18,7 @@ export default function Save({ attributes }) {
   };
 
   return (
-    <div
-      {...useBlockProps.save({ className: renderClassName(), className: null })}
-    >
+    <div className={renderClassName()}>
       <InnerBlocks.Content />
     </div>
   );
