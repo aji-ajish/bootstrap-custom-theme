@@ -2,7 +2,7 @@
     "apiVersion": 2,
     "name": "bootstrap-custom-theme/column",
     "title": "Bootstrap Column",
-    "category": "design",
+    "category": "custom-blocks",
     "icon": "columns",
     "description": "Responsive Bootstrap Column with multiple breakpoints",
     "supports": {

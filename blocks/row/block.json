@@ -1,7 +1,7 @@
 {
   "apiVersion": 2,
   "name": "bootstrap-custom-theme/row",
-  "title": "Row",
+  "title": "Bootstrap Row",
   "category": "custom-blocks",
   "icon": "editor-table",
   "description": "A Bootstrap-style row with customizable classes and alignment.",
