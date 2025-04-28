@@ -68,5 +68,6 @@ function bootstrap_custom_theme_register_blocks()
     register_block_type_from_metadata(__DIR__ . '/blocks/row');
     register_block_type_from_metadata(__DIR__ . '/blocks/column');
     register_block_type_from_metadata(__DIR__ . '/blocks/accordion');
+    register_block_type_from_metadata(__DIR__ . '/blocks/tabs');
 }
 add_action('init', 'bootstrap_custom_theme_register_blocks');
