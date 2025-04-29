@@ -39,8 +39,9 @@ export default function Save({ attributes }) {
                         role="tabpanel"
                         aria-labelledby={`nav-${clientId}-tab-${index}`}
                     >
+                        {/* Ensure innerBlocks content is rendered */}
                         <div className="tab-content-inner">
-                            {tab.innerBlocks && tab.innerBlocks.map((block, i) => (
+                            {tab.innerBlocks && tab.innerBlocks.length > 0 && tab.innerBlocks.map((block, i) => (
                                 <div key={i} dangerouslySetInnerHTML={{ __html: block }} />
                             ))}
                         </div>
