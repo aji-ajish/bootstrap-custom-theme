@@ -1,10 +1,14 @@
-import { RichText, InnerBlocks } from '@wordpress/block-editor';
+import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
 
 export default function Save({ attributes }) {
     const { tabs, orientation, style, clientId } = attributes;
+    const blockProps = useBlockProps.save({
+        className: orientation === 'vertical' ? 'd-flex align-items-start' : ''
+    });
 
     return (
-        <div className={orientation === 'vertical' ? 'd-flex align-items-start' : ''}>
+        <div {...blockProps}>
+            {/* Tab headers */}
             <div
                 className={`nav ${orientation === 'vertical' ? 'flex-column me-3' : ''} nav-${style} mb-3`}
                 id={`nav-${clientId}`}
@@ -30,6 +34,7 @@ export default function Save({ attributes }) {
                 ))}
             </div>
 
+            {/* Tab content */}
             <div className="tab-content" id={`nav-${clientId}-content`}>
                 {tabs.map((tab, index) => (
                     <div
@@ -37,10 +42,10 @@ export default function Save({ attributes }) {
                         className={`tab-pane fade ${tab.active ? 'show active' : ''}`}
                         id={`nav-${clientId}-${index}`}
                         role="tabpanel"
+                        aria-labelledby={`nav-${clientId}-tab-${index}`}
                     >
                         <div className="tab-content-inner">
-                            {/* Render InnerBlocks for each tab */}
-                            <InnerBlocks.Content />
+                            {tab.active && <InnerBlocks.Content />}
                         </div>
                     </div>
                 ))}

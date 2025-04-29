@@ -4,62 +4,59 @@ import { Button, SelectControl, PanelBody, PanelRow } from '@wordpress/component
 import { InnerBlocks, useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor';
 
 const ALLOWED_BLOCKS = ['core/paragraph', 'core/image', 'core/heading', 'core/list', 'core/columns'];
+const TEMPLATE = [['core/paragraph', { placeholder: 'Add tab content...' }]];
 
 export default function Edit({ attributes, setAttributes, clientId }) {
-    const { tabs, orientation, style } = attributes;
+    const { tabs = [], orientation, style } = attributes;
     const [activeTab, setActiveTab] = useState(0);
     const blockProps = useBlockProps();
 
-    // Initialize innerBlocks for each tab on the first render
+    // Init tabs on first mount
     useEffect(() => {
-        if (tabs.length > 0 && !tabs[0].innerBlocks) {
-            const newTabs = tabs.map(tab => ({
-                ...tab,
-                innerBlocks: tab.innerBlocks || []  // Initialize empty blocks
-            }));
-            setAttributes({ tabs: newTabs });
+        if (!attributes.clientId) {
+            setAttributes({ clientId });
         }
-    }, [tabs, setAttributes]);
+        if (tabs.length === 0) {
+            setAttributes({
+                tabs: [{
+                    title: 'Tab 1',
+                    active: true,
+                    ref: `tab-${clientId}-0`,
+                }]
+            });
+        }
+    }, []);
 
-    // Add a new tab
     const addTab = () => {
-        const newTabs = [...tabs];
+        const newIndex = tabs.length;
+        const newTabs = tabs.map(tab => ({ ...tab, active: false }));
         newTabs.push({
-            title: `Tab ${tabs.length + 1}`,
-            active: false,
-            innerBlocks: []  // New tab with no content
+            title: `Tab ${newIndex + 1}`,
+            active: true,
+            ref: `tab-${clientId}-${newIndex}`,
         });
         setAttributes({ tabs: newTabs });
+        setActiveTab(newIndex);
     };
 
-    // Remove a tab
     const removeTab = (index) => {
         if (tabs.length <= 1) return;
-
-        const newTabs = [...tabs];
-        newTabs.splice(index, 1);
-
-        if (tabs[index].active && newTabs.length > 0) {
-            newTabs[0].active = true;
-            setActiveTab(0);
-        }
-
+        const newTabs = tabs.filter((_, i) => i !== index).map((tab, i) => ({
+            ...tab,
+            active: i === 0, // activate the first tab if active one is removed
+        }));
         setAttributes({ tabs: newTabs });
+        setActiveTab(0);
     };
 
-    // Update tab title
     const updateTabTitle = (index, title) => {
         const newTabs = [...tabs];
         newTabs[index].title = title;
         setAttributes({ tabs: newTabs });
     };
 
-    // Set the active tab
     const setTabActive = (index) => {
-        const newTabs = tabs.map((tab, i) => ({
-            ...tab,
-            active: i === index
-        }));
+        const newTabs = tabs.map((tab, i) => ({ ...tab, active: i === index }));
         setAttributes({ tabs: newTabs });
         setActiveTab(index);
     };
@@ -99,59 +96,51 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             </InspectorControls>
 
             <div className={orientation === 'vertical' ? 'd-flex align-items-start' : ''}>
-                <div
-                    className={`nav ${orientation === 'vertical' ? 'flex-column me-3' : ''} nav-${style} mb-3`}
-                    role="tablist"
-                >
+                {/* Tab headers */}
+                <div className={`nav ${orientation === 'vertical' ? 'flex-column me-3' : ''} nav-${style} mb-3`}>
                     {tabs.map((tab, index) => (
                         <button
-                            key={index}
+                            key={tab.ref}
                             className={`nav-link ${tab.active ? 'active' : ''}`}
-                            type="button"
-                            role="tab"
-                            aria-selected={tab.active}
                             onClick={() => setTabActive(index)}
+                            type="button"
                         >
                             <RichText
                                 tagName="span"
                                 value={tab.title}
                                 onChange={(value) => updateTabTitle(index, value)}
+                                placeholder={__('Tab title')}
                                 allowedFormats={[]}
-                                placeholder={__('Tab title', 'bootstrap-custom-theme')}
                             />
-                            <Button
-                                className="tab-remove"
-                                isSmall
-                                isDestructive
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeTab(index);
-                                }}
-                            >
-                                ×
-                            </Button>
+                            {tabs.length > 1 && (
+                                <Button
+                                    isSmall
+                                    isDestructive
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeTab(index);
+                                    }}
+                                >
+                                    ×
+                                </Button>
+                            )}
                         </button>
                     ))}
                 </div>
 
-                <div className="tab-content">
+                {/* Tab content */}
+                <div className="tab-content w-100">
                     {tabs.map((tab, index) => (
-                        <div key={index} className={`tab-pane ${tab.active ? 'active' : ''}`} role="tabpanel">
+                        <div
+                            key={tab.ref}
+                            className={`tab-pane ${tab.active ? 'active' : ''}`}
+                        >
                             {tab.active && (
-                                <div className="tab-content-inner">
-                                    <InnerBlocks
-                                        allowedBlocks={ALLOWED_BLOCKS}
-                                        value={tab.innerBlocks} // Ensure each tab has its unique blocks
-                                        onChange={(blocks) => {
-                                            const updatedTabs = [...tabs];
-                                            updatedTabs[index].innerBlocks = blocks;
-                                            setAttributes({ tabs: updatedTabs });
-                                        }}
-                                        template={[['core/paragraph', { placeholder: 'Add tab content...' }]]}
-                                        templateLock={false}
-                                        renderAppender={InnerBlocks.ButtonBlockAppender}
-                                    />
-                                </div>
+                                <InnerBlocks
+                                    allowedBlocks={ALLOWED_BLOCKS}
+                                    template={TEMPLATE}
+                                    templateLock={false}
+                                />
                             )}
                         </div>
                     ))}
