@@ -20,6 +20,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             setAttributes({
                 tabs: [{
                     title: 'Tab 1',
+                    content: '',
                     active: true,
                     ref: `tab-${clientId}-0`,
                 }]
@@ -32,6 +33,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         const newTabs = tabs.map(tab => ({ ...tab, active: false }));
         newTabs.push({
             title: `Tab ${newIndex + 1}`,
+            content: '',
             active: true,
             ref: `tab-${clientId}-${newIndex}`,
         });
@@ -52,6 +54,12 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     const updateTabTitle = (index, title) => {
         const newTabs = [...tabs];
         newTabs[index].title = title;
+        setAttributes({ tabs: newTabs });
+    };
+
+    const updateTabContent = (index, content) => {
+        const newTabs = [...tabs];
+        newTabs[index].content = content;
         setAttributes({ tabs: newTabs });
     };
 
@@ -140,6 +148,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                     allowedBlocks={ALLOWED_BLOCKS}
                                     template={TEMPLATE}
                                     templateLock={false}
+                                    onChange={(content) => updateTabContent(index, content)}
                                 />
                             )}
                         </div>

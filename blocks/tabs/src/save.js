@@ -45,7 +45,7 @@ export default function Save({ attributes }) {
                         aria-labelledby={`nav-${clientId}-tab-${index}`}
                     >
                         <div className="tab-content-inner">
-                            {tab.active && <InnerBlocks.Content />}
+                            <InnerBlocks.Content />
                         </div>
                     </div>
                 ))}
