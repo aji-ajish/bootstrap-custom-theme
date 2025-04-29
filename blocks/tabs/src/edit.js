@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { Button, ButtonGroup, PanelBody, PanelRow, TextControl, SelectControl } from '@wordpress/components';
+import { Button, SelectControl, PanelBody, PanelRow } from '@wordpress/components';
 import { InnerBlocks, useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor';
 
 const ALLOWED_BLOCKS = ['core/paragraph', 'core/image', 'core/heading', 'core/list', 'core/columns'];
@@ -10,43 +10,37 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     const [activeTab, setActiveTab] = useState(0);
     const blockProps = useBlockProps();
 
-    // Initialize clientId and ensure unique content for each tab
     useEffect(() => {
-        if (!attributes.clientId) {
-            setAttributes({ clientId });
-        }
-
-        // Initialize inner blocks for each tab if not already set
-        if (tabs.length > 0 && (!tabs[0].innerBlocks || tabs[0].innerBlocks === '')) {
+        if (tabs.length > 0 && !tabs[0].innerBlocks) {
             const newTabs = tabs.map(tab => ({
                 ...tab,
-                innerBlocks: tab.innerBlocks || []
+                innerBlocks: tab.innerBlocks || [] // Ensure every tab has its own innerBlocks
             }));
             setAttributes({ tabs: newTabs });
         }
-    }, []);
+    }, [tabs, setAttributes]);
 
     const addTab = () => {
         const newTabs = [...tabs];
-        newTabs.push({ 
-            title: `Tab ${tabs.length + 1}`, 
+        newTabs.push({
+            title: `Tab ${tabs.length + 1}`,
             active: false,
-            innerBlocks: []
+            innerBlocks: []  // Add new tab with no content
         });
         setAttributes({ tabs: newTabs });
     };
 
     const removeTab = (index) => {
         if (tabs.length <= 1) return;
-        
+
         const newTabs = [...tabs];
         newTabs.splice(index, 1);
-        
+
         if (tabs[index].active && newTabs.length > 0) {
             newTabs[0].active = true;
             setActiveTab(0);
         }
-        
+
         setAttributes({ tabs: newTabs });
     };
 
@@ -63,12 +57,6 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         }));
         setAttributes({ tabs: newTabs });
         setActiveTab(index);
-    };
-
-    const updateTabContent = (index, blocks) => {
-        const newTabs = [...tabs];
-        newTabs[index].innerBlocks = blocks;
-        setAttributes({ tabs: newTabs });
     };
 
     return (
@@ -98,10 +86,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                         />
                     </PanelRow>
                     <PanelRow>
-                        <Button
-                            variant="primary"
-                            onClick={addTab}
-                        >
+                        <Button variant="primary" onClick={addTab}>
                             {__('Add Tab', 'bootstrap-custom-theme')}
                         </Button>
                     </PanelRow>
@@ -109,8 +94,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             </InspectorControls>
 
             <div className={orientation === 'vertical' ? 'd-flex align-items-start' : ''}>
-                <div 
-                    className={`nav ${orientation === 'vertical' ? 'flex-column me-3' : ''} nav-${style} mb-3`} 
+                <div
+                    className={`nav ${orientation === 'vertical' ? 'flex-column me-3' : ''} nav-${style} mb-3`}
                     role="tablist"
                 >
                     {tabs.map((tab, index) => (
@@ -146,20 +131,21 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
                 <div className="tab-content">
                     {tabs.map((tab, index) => (
-                        <div
-                            key={index}
-                            className={`tab-pane ${tab.active ? 'active' : ''}`}
-                            role="tabpanel"
-                        >
+                        <div key={index} className={`tab-pane ${tab.active ? 'active' : ''}`} role="tabpanel">
                             {tab.active && (
                                 <div className="tab-content-inner">
+                                    {/* Ensure InnerBlocks is uniquely tied to each tab */}
                                     <InnerBlocks
                                         allowedBlocks={ALLOWED_BLOCKS}
+                                        value={tab.innerBlocks} // This ensures each tab has unique content
+                                        onChange={(blocks) => {
+                                            const updatedTabs = [...tabs];
+                                            updatedTabs[index].innerBlocks = blocks;
+                                            setAttributes({ tabs: updatedTabs });
+                                        }}
                                         template={[['core/paragraph', { placeholder: 'Add tab content...' }]]}
                                         templateLock={false}
                                         renderAppender={InnerBlocks.ButtonBlockAppender}
-                                        value={tab.innerBlocks}
-                                        onChange={(blocks) => updateTabContent(index, blocks)}
                                     />
                                 </div>
                             )}

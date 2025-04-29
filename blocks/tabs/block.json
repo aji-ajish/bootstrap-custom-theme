@@ -7,36 +7,28 @@
   "description": "A Bootstrap tabs block with horizontal and vertical orientations.",
   "keywords": ["tabs", "bootstrap", "navigation"],
   "attributes": {
-      "tabs": {
-          "type": "array",
-          "default": [
-              { 
-                  "title": "Tab 1", 
-                  "active": true,
-                  "innerBlocks": []
-              },
-              { 
-                  "title": "Tab 2", 
-                  "active": false,
-                  "innerBlocks": []
-              }
-          ]
-      },
-      "orientation": {
-          "type": "string",
-          "default": "horizontal"
-      },
-      "style": {
-          "type": "string",
-          "default": "tabs"
-      },
-      "clientId": {
-          "type": "string",
-          "default": ""
-      }
+    "tabs": {
+      "type": "array",
+      "default": [
+        { "title": "Tab 1", "active": true },
+        { "title": "Tab 2", "active": false }
+      ]
+    },
+    "orientation": {
+      "type": "string",
+      "default": "horizontal"
+    },
+    "style": {
+      "type": "string",
+      "default": "tabs"
+    },
+    "clientId": {
+      "type": "string",
+      "default": ""
+    }
   },
   "supports": {
-      "html": false
+    "html": false
   },
   "editorScript": "file:./build/index.js",
   "style": "file:./build/style-index.css"

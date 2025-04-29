@@ -1,12 +1,12 @@
-import { RichText } from '@wordpress/block-editor';
+import { RichText, InnerBlocks } from '@wordpress/block-editor';
 
 export default function Save({ attributes }) {
     const { tabs, orientation, style, clientId } = attributes;
 
     return (
         <div className={orientation === 'vertical' ? 'd-flex align-items-start' : ''}>
-            <div 
-                className={`nav ${orientation === 'vertical' ? 'flex-column me-3' : ''} nav-${style} mb-3`} 
+            <div
+                className={`nav ${orientation === 'vertical' ? 'flex-column me-3' : ''} nav-${style} mb-3`}
                 id={`nav-${clientId}`}
                 role="tablist"
             >
@@ -37,14 +37,9 @@ export default function Save({ attributes }) {
                         className={`tab-pane fade ${tab.active ? 'show active' : ''}`}
                         id={`nav-${clientId}-${index}`}
                         role="tabpanel"
-                        aria-labelledby={`nav-${clientId}-tab-${index}`}
                     >
-                        {/* Ensure innerBlocks content is rendered */}
-                        <div className="tab-content-inner">
-                            {tab.innerBlocks && tab.innerBlocks.length > 0 && tab.innerBlocks.map((block, i) => (
-                                <div key={i} dangerouslySetInnerHTML={{ __html: block }} />
-                            ))}
-                        </div>
+                        {/* Save content separately for each tab */}
+                        <InnerBlocks.Content />
                     </div>
                 ))}
             </div>
