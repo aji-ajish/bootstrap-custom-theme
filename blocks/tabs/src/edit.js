@@ -10,26 +10,29 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     const [activeTab, setActiveTab] = useState(0);
     const blockProps = useBlockProps();
 
+    // Initialize innerBlocks for each tab on the first render
     useEffect(() => {
         if (tabs.length > 0 && !tabs[0].innerBlocks) {
             const newTabs = tabs.map(tab => ({
                 ...tab,
-                innerBlocks: tab.innerBlocks || [] // Ensure every tab has its own innerBlocks
+                innerBlocks: tab.innerBlocks || []  // Initialize empty blocks
             }));
             setAttributes({ tabs: newTabs });
         }
     }, [tabs, setAttributes]);
 
+    // Add a new tab
     const addTab = () => {
         const newTabs = [...tabs];
         newTabs.push({
             title: `Tab ${tabs.length + 1}`,
             active: false,
-            innerBlocks: []  // Add new tab with no content
+            innerBlocks: []  // New tab with no content
         });
         setAttributes({ tabs: newTabs });
     };
 
+    // Remove a tab
     const removeTab = (index) => {
         if (tabs.length <= 1) return;
 
@@ -44,12 +47,14 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         setAttributes({ tabs: newTabs });
     };
 
+    // Update tab title
     const updateTabTitle = (index, title) => {
         const newTabs = [...tabs];
         newTabs[index].title = title;
         setAttributes({ tabs: newTabs });
     };
 
+    // Set the active tab
     const setTabActive = (index) => {
         const newTabs = tabs.map((tab, i) => ({
             ...tab,
@@ -134,10 +139,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                         <div key={index} className={`tab-pane ${tab.active ? 'active' : ''}`} role="tabpanel">
                             {tab.active && (
                                 <div className="tab-content-inner">
-                                    {/* Ensure InnerBlocks is uniquely tied to each tab */}
                                     <InnerBlocks
                                         allowedBlocks={ALLOWED_BLOCKS}
-                                        value={tab.innerBlocks} // This ensures each tab has unique content
+                                        value={tab.innerBlocks} // Ensure each tab has its unique blocks
                                         onChange={(blocks) => {
                                             const updatedTabs = [...tabs];
                                             updatedTabs[index].innerBlocks = blocks;

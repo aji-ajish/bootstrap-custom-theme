@@ -38,8 +38,10 @@ export default function Save({ attributes }) {
                         id={`nav-${clientId}-${index}`}
                         role="tabpanel"
                     >
-                        {/* Save content separately for each tab */}
-                        <InnerBlocks.Content />
+                        <div className="tab-content-inner">
+                            {/* Render InnerBlocks for each tab */}
+                            <InnerBlocks.Content />
+                        </div>
                     </div>
                 ))}
             </div>
