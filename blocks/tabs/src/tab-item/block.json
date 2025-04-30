@@ -1,0 +1,20 @@
+{
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/tab-item",
+  "title": "Tab Item",
+  "parent": ["bootstrap-custom-theme/tabs"],
+  "category": "layout",
+  "icon": "welcome-widgets-menus",
+  "description": "Single tab panel with editable title and body",
+  "supports": {
+    "html": false,
+    "reusable": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Tab Title"
+    }
+  },
+  "editorScript": "file:../build/index.js"
+}
