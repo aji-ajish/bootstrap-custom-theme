@@ -1,55 +1,49 @@
-import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
+import { RichText } from '@wordpress/block-editor';
 
 export default function Save({ attributes }) {
-    const { tabs, orientation, style, clientId } = attributes;
-    const blockProps = useBlockProps.save({
-        className: orientation === 'vertical' ? 'd-flex align-items-start' : ''
-    });
+  const { tabs, orientation, style } = attributes;
 
-    return (
-        <div {...blockProps}>
-            {/* Tab headers */}
+  return (
+    <div>
+      {/* Navigation with dynamic active class */}
+      <ul className={`nav nav-${style} ${orientation === 'vertical' ? 'flex-column' : ''}`} role="tablist" aria-orientation={orientation}>
+        {tabs.map((tab, index) => {
+          const tabId = tab.title.toLowerCase().replace(/\s+/g, '-'); // Generate unique id based on tab title
+          return (
+            <li key={index} className="nav-item" role="presentation">
+              <RichText.Content
+                tagName="button"
+                className={`nav-link ${index === 0 ? 'active' : ''}`} // Only the first tab is active
+                value={tab.title}
+                data-bs-toggle="tab"
+                data-bs-target={`#${tabId}`}
+                role="tab"
+                aria-selected={index === 0 ? "true" : "false"}
+                id={`${tabId}-button`}
+                aria-controls={tabId}
+              />
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* Tab Content with dynamic active class */}
+      <div className="tab-content">
+        {tabs.map((tab, index) => {
+          const tabId = tab.title.toLowerCase().replace(/\s+/g, '-'); // Generate unique id based on tab title
+          return (
             <div
-                className={`nav ${orientation === 'vertical' ? 'flex-column me-3' : ''} nav-${style} mb-3`}
-                id={`nav-${clientId}`}
-                role="tablist"
+              key={index}
+              className={`tab-pane fade ${index === 0 ? 'show active' : ''}`} // Only the first tab pane is active
+              id={tabId}
+              role="tabpanel"
+              aria-labelledby={`${tabId}-button`}
             >
-                {tabs.map((tab, index) => (
-                    <button
-                        key={index}
-                        className={`nav-link ${tab.active ? 'active' : ''}`}
-                        id={`nav-${clientId}-tab-${index}`}
-                        data-bs-toggle="tab"
-                        data-bs-target={`#nav-${clientId}-${index}`}
-                        type="button"
-                        role="tab"
-                        aria-controls={`nav-${clientId}-${index}`}
-                        aria-selected={tab.active}
-                    >
-                        <RichText.Content
-                            tagName="span"
-                            value={tab.title}
-                        />
-                    </button>
-                ))}
+              <RichText.Content tagName="div" value={tab.content} />
             </div>
-
-            {/* Tab content */}
-            <div className="tab-content" id={`nav-${clientId}-content`}>
-                {tabs.map((tab, index) => (
-                    <div
-                        key={index}
-                        className={`tab-pane fade ${tab.active ? 'show active' : ''}`}
-                        id={`nav-${clientId}-${index}`}
-                        role="tabpanel"
-                        aria-labelledby={`nav-${clientId}-tab-${index}`}
-                    >
-                        <div className="tab-content-inner">
-                            <InnerBlocks.Content />
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+          );
+        })}
+      </div>
+    </div>
+  );
 }

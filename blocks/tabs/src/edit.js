@@ -1,160 +1,106 @@
-import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
-import { Button, SelectControl, PanelBody, PanelRow } from '@wordpress/components';
-import { InnerBlocks, useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor';
+import { PanelBody, SelectControl, Button, IconButton } from '@wordpress/components';
+import { TrashIcon } from '@wordpress/icons';
 
-const ALLOWED_BLOCKS = ['core/paragraph', 'core/image', 'core/heading', 'core/list', 'core/columns'];
-const TEMPLATE = [['core/paragraph', { placeholder: 'Add tab content...' }]];
+export default function Edit({ attributes, setAttributes }) {
+  const { tabs, orientation, style } = attributes;
 
-export default function Edit({ attributes, setAttributes, clientId }) {
-    const { tabs = [], orientation, style } = attributes;
-    const [activeTab, setActiveTab] = useState(0);
-    const blockProps = useBlockProps();
+  const updateTab = (index, key, value) => {
+    const updatedTabs = [...tabs];
+    updatedTabs[index][key] = value;
+    setAttributes({ tabs: updatedTabs });
+  };
 
-    // Init tabs on first mount
-    useEffect(() => {
-        if (!attributes.clientId) {
-            setAttributes({ clientId });
-        }
-        if (tabs.length === 0) {
-            setAttributes({
-                tabs: [{
-                    title: 'Tab 1',
-                    content: '',
-                    active: true,
-                    ref: `tab-${clientId}-0`,
-                }]
-            });
-        }
-    }, []);
+  const addTab = () => {
+    setAttributes({
+      tabs: [...tabs, { title: "New Tab", content: "New Content" }]
+    });
+  };
 
-    const addTab = () => {
-        const newIndex = tabs.length;
-        const newTabs = tabs.map(tab => ({ ...tab, active: false }));
-        newTabs.push({
-            title: `Tab ${newIndex + 1}`,
-            content: '',
-            active: true,
-            ref: `tab-${clientId}-${newIndex}`,
-        });
-        setAttributes({ tabs: newTabs });
-        setActiveTab(newIndex);
-    };
+  const deleteTab = (index) => {
+    const updatedTabs = tabs.filter((_, tabIndex) => tabIndex !== index);
+    setAttributes({ tabs: updatedTabs });
+  };
 
-    const removeTab = (index) => {
-        if (tabs.length <= 1) return;
-        const newTabs = tabs.filter((_, i) => i !== index).map((tab, i) => ({
-            ...tab,
-            active: i === 0, // activate the first tab if active one is removed
-        }));
-        setAttributes({ tabs: newTabs });
-        setActiveTab(0);
-    };
+  return (
+    <div {...useBlockProps()}>
+      <InspectorControls>
+        <PanelBody title="Tab Settings">
+          <SelectControl
+            label="Tab Orientation"
+            value={orientation}
+            options={[
+              { label: 'Horizontal', value: 'horizontal' },
+              { label: 'Vertical', value: 'vertical' }
+            ]}
+            onChange={(value) => setAttributes({ orientation: value })}
+          />
+          <SelectControl
+            label="Tab Style"
+            value={style}
+            options={[
+              { label: 'Tabs', value: 'tabs' },
+              { label: 'Pills', value: 'pills' }
+            ]}
+            onChange={(value) => setAttributes({ style: value })}
+          />
+          <Button isPrimary onClick={addTab}>Add New Tab</Button>
+        </PanelBody>
+      </InspectorControls>
 
-    const updateTabTitle = (index, title) => {
-        const newTabs = [...tabs];
-        newTabs[index].title = title;
-        setAttributes({ tabs: newTabs });
-    };
+      {/* Navigation with dynamic active class */}
+      <ul className={`nav nav-${style} ${orientation === 'vertical' ? 'flex-column' : ''}`} role="tablist" aria-orientation={orientation}>
+        {tabs.map((tab, index) => {
+          const tabId = tab.title.toLowerCase().replace(/\s+/g, '-'); // Use tab title to generate unique id
+          return (
+            <li key={index} className="nav-item" role="presentation">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <RichText
+                  tagName="button"
+                  className={`nav-link ${index === 0 ? 'active' : ''}`} // Only the first tab is active
+                  value={tab.title}
+                  onChange={(value) => updateTab(index, 'title', value)}
+                  placeholder="Tab Title"
+                  data-bs-toggle="tab"
+                  data-bs-target={`#${tabId}`}
+                  role="tab"
+                  aria-selected={index === 0 ? "true" : "false"}
+                  id={`${tabId}-button`}
+                  aria-controls={tabId}
+                />
+                {/* Show delete icon only in editor */}
+                {index !== 0 && (
+                  <span onClick={() => deleteTab(index)}
+                    style={{ marginLeft: '8px',color:'red' ,cursor:'pointer'}}>x</span>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
 
-    const updateTabContent = (index, content) => {
-        const newTabs = [...tabs];
-        newTabs[index].content = content;
-        setAttributes({ tabs: newTabs });
-    };
-
-    const setTabActive = (index) => {
-        const newTabs = tabs.map((tab, i) => ({ ...tab, active: i === index }));
-        setAttributes({ tabs: newTabs });
-        setActiveTab(index);
-    };
-
-    return (
-        <div {...blockProps}>
-            <InspectorControls>
-                <PanelBody title={__('Tabs Settings', 'bootstrap-custom-theme')}>
-                    <PanelRow>
-                        <SelectControl
-                            label={__('Orientation', 'bootstrap-custom-theme')}
-                            value={orientation}
-                            options={[
-                                { label: __('Horizontal', 'bootstrap-custom-theme'), value: 'horizontal' },
-                                { label: __('Vertical', 'bootstrap-custom-theme'), value: 'vertical' }
-                            ]}
-                            onChange={(value) => setAttributes({ orientation: value })}
-                        />
-                    </PanelRow>
-                    <PanelRow>
-                        <SelectControl
-                            label={__('Style', 'bootstrap-custom-theme')}
-                            value={style}
-                            options={[
-                                { label: __('Tabs', 'bootstrap-custom-theme'), value: 'tabs' },
-                                { label: __('Pills', 'bootstrap-custom-theme'), value: 'pills' }
-                            ]}
-                            onChange={(value) => setAttributes({ style: value })}
-                        />
-                    </PanelRow>
-                    <PanelRow>
-                        <Button variant="primary" onClick={addTab}>
-                            {__('Add Tab', 'bootstrap-custom-theme')}
-                        </Button>
-                    </PanelRow>
-                </PanelBody>
-            </InspectorControls>
-
-            <div className={orientation === 'vertical' ? 'd-flex align-items-start' : ''}>
-                {/* Tab headers */}
-                <div className={`nav ${orientation === 'vertical' ? 'flex-column me-3' : ''} nav-${style} mb-3`}>
-                    {tabs.map((tab, index) => (
-                        <button
-                            key={tab.ref}
-                            className={`nav-link ${tab.active ? 'active' : ''}`}
-                            onClick={() => setTabActive(index)}
-                            type="button"
-                        >
-                            <RichText
-                                tagName="span"
-                                value={tab.title}
-                                onChange={(value) => updateTabTitle(index, value)}
-                                placeholder={__('Tab title')}
-                                allowedFormats={[]}
-                            />
-                            {tabs.length > 1 && (
-                                <Button
-                                    isSmall
-                                    isDestructive
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        removeTab(index);
-                                    }}
-                                >
-                                    ×
-                                </Button>
-                            )}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Tab content */}
-                <div className="tab-content w-100">
-                    {tabs.map((tab, index) => (
-                        <div
-                            key={tab.ref}
-                            className={`tab-pane ${tab.active ? 'active' : ''}`}
-                        >
-                            {tab.active && (
-                                <InnerBlocks
-                                    allowedBlocks={ALLOWED_BLOCKS}
-                                    template={TEMPLATE}
-                                    templateLock={false}
-                                    onChange={(content) => updateTabContent(index, content)}
-                                />
-                            )}
-                        </div>
-                    ))}
-                </div>
+      {/* Tab Content with dynamic active class */}
+      <div className="tab-content">
+        {tabs.map((tab, index) => {
+          const tabId = tab.title.toLowerCase().replace(/\s+/g, '-'); // Generate unique id based on tab title
+          return (
+            <div
+              key={index}
+              className={`tab-pane fade ${index === 0 ? 'show active' : ''}`} // Only the first tab pane is active
+              id={tabId}
+              role="tabpanel"
+              aria-labelledby={`${tabId}-button`}
+            >
+              <RichText
+                tagName="div"
+                value={tab.content}
+                onChange={(value) => updateTab(index, 'content', value)}
+                placeholder="Tab Content"
+              />
             </div>
-        </div>
-    );
+          );
+        })}
+      </div>
+    </div>
+  );
 }

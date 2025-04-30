@@ -3,15 +3,12 @@
   "name": "bootstrap-custom-theme/tabs",
   "title": "Bootstrap Tabs",
   "category": "custom-blocks",
-  "icon": "excerpt-view",
-  "description": "A Bootstrap tabs block with horizontal and vertical orientations.",
-  "keywords": ["tabs", "bootstrap", "navigation"],
+  "icon": "list-view",
   "attributes": {
     "tabs": {
       "type": "array",
       "default": [
-        { "title": "Tab 1", "active": true },
-        { "title": "Tab 2", "active": false }
+        { "title": "Tab 1", "content": "Tab 1 Content" }
       ]
     },
     "orientation": {
@@ -21,14 +18,7 @@
     "style": {
       "type": "string",
       "default": "tabs"
-    },
-    "clientId": {
-      "type": "string",
-      "default": ""
     }
-  },
-  "supports": {
-    "html": false
   },
   "editorScript": "file:./build/index.js",
   "style": "file:./build/style-index.css"

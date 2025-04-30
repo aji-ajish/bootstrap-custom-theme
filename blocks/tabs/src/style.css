@@ -1,55 +1,14 @@
-/* Editor Styles */
-.wp-block-bootstrap-custom-theme-tabs {
-    margin-bottom: 1.5rem;
-}
-
-.wp-block-bootstrap-custom-theme-tabs .nav {
-    margin-bottom: 1rem;
-}
-
-.wp-block-bootstrap-custom-theme-tabs .tab-pane {
-    padding: 1rem;
-    border: 1px solid #dee2e6;
+.wp-block-bootstrap-custom-theme-tabs .nav-link {
+    cursor: pointer;
+  }
+  
+  .wp-block-bootstrap-custom-theme-tabs .tab-content {
+    margin-top: 1em;
+  }
+  
+  .wp-block-bootstrap-custom-theme-tabs .tab-pane {
+    padding: 1em;
+    border: 1px solid #ddd;
     border-top: none;
-}
-
-.wp-block-bootstrap-custom-theme-tabs .nav-vertical + .tab-content {
-    flex: 1;
-}
-
-.wp-block-bootstrap-custom-theme-tabs .tab-remove {
-    margin-left: 8px;
-    padding: 0 4px;
-    min-width: 20px;
-    height: 20px;
-    line-height: 1;
-}
-
-/* Frontend Styles */
-.tab-content .tab-pane {
-    padding: 1rem;
-    border: 1px solid #dee2e6;
-    border-top: none;
-}
-
-.tab-content .tab-pane:not(.active) {
-    display: none;
-}
-
-.tab-content .tab-pane.active {
-    display: block;
-}
-
-/* Vertical tabs specific styles */
-.d-flex.align-items-start {
-    width: 100%;
-}
-
-.nav-vertical {
-    min-width: 150px;
-}
-
-/* Block appender styles */
-.tab-content-inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender {
-    margin: 0;
-}
+  }
+  

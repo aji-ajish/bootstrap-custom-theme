@@ -10,8 +10,8 @@
     "build:row": "wp-scripts build blocks/row/src/index.js --output-path=blocks/row/build",
     "build:column": "wp-scripts build blocks/column/src/index.js --output-path=blocks/column/build",
     "build:accordion": "wp-scripts build blocks/accordion/src/index.js --output-path=blocks/accordion/build",
-    "build:tabs": "wp-scripts build blocks/tabs/src/index.js --output-path=blocks/tabs/build"
-
+    "build:tabs": "wp-scripts build blocks/tabs/src/index.js --output-path=blocks/tabs/build",
+    "start:tabs": "wp-scripts start blocks/tabs/src/index.js --output-path=blocks/tabs/build"
   },
   "keywords": [],
   "author": "",
@@ -19,9 +19,10 @@
   "devDependencies": {
     "@wordpress/block-editor": "^14.17.0",
     "@wordpress/blocks": "^14.11.0",
-    "@wordpress/scripts": "^30.15.0"
-  },
-  "dependencies": {
+    "@wordpress/components": "^29.8.0",
+    "@wordpress/element": "^6.22.0",
+    "@wordpress/scripts": "^30.15.0",
+    "react": "^19.1.0",
     "react-draggable": "^4.4.6"
   }
 }
