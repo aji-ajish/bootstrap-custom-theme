@@ -1,8 +1,4 @@
-import {
-  useBlockProps,
-  RichText,
-  InnerBlocks
-} from '@wordpress/block-editor';
+import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
 
 export default function Edit({ attributes, setAttributes }) {
   const { title, tabId } = attributes;
@@ -14,20 +10,26 @@ export default function Edit({ attributes, setAttributes }) {
 
   return (
     <div {...blockProps}>
-      <div className="tab-header">
-        <RichText
-          tagName="button"
+      <div className="nav-item" role="presentation">
+        <button
           className="nav-link"
-          value={title}
-          onChange={(val) => setAttributes({ title: val })}
-          placeholder="Enter tab title"
-          type="button"
+          id={`${tabContentId}-tab`}
           data-bs-toggle="tab"
           data-bs-target={`#${tabContentId}`}
+          type="button"
+          role="tab"
+          aria-controls={tabContentId}
           aria-selected="false"
-        />
+        >
+          <RichText
+            tagName="span"
+            value={title}
+            onChange={(val) => setAttributes({ title: val })}
+            placeholder="Enter tab title"
+          />
+        </button>
       </div>
-      <div className="tab-body" id={tabContentId}>
+      <div className="tab-pane fade" id={tabContentId} role="tabpanel" aria-labelledby={`${tabContentId}-tab`}>
         <InnerBlocks
           allowedBlocks={['core/paragraph', 'core/image', 'core/heading']}
           renderAppender={InnerBlocks.ButtonBlockAppender}

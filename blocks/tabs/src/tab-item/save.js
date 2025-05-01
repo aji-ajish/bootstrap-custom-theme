@@ -7,17 +7,21 @@ export default function Save({ attributes }) {
 
   return (
     <div {...useBlockProps.save()}>
-      <div className="tab-header">
-        <RichText.Content
-          tagName="button"
+      <div className="nav-item" role="presentation">
+        <button
           className="nav-link"
-          value={title}
+          id={`${tabContentId}-tab`}
           data-bs-toggle="tab"
           data-bs-target={`#${tabContentId}`}
+          type="button"
+          role="tab"
+          aria-controls={tabContentId}
           aria-selected="false"
-        />
+        >
+          <RichText.Content value={title} />
+        </button>
       </div>
-      <div className="tab-body" id={tabContentId}>
+      <div className="tab-pane fade" id={tabContentId} role="tabpanel" aria-labelledby={`${tabContentId}-tab`}>
         <InnerBlocks.Content />
       </div>
     </div>
