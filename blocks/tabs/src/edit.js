@@ -3,7 +3,7 @@ import {
   InspectorControls,
   InnerBlocks
 } from '@wordpress/block-editor';
-import { PanelBody, SelectControl, Button } from '@wordpress/components';
+import { PanelBody, SelectControl } from '@wordpress/components';
 
 export default function Edit({ attributes, setAttributes }) {
   const { orientation, style } = attributes;
@@ -37,12 +37,41 @@ export default function Edit({ attributes, setAttributes }) {
         </PanelBody>
       </InspectorControls>
 
-      <div className={`tabs-container nav-${style} ${orientation === 'vertical' ? 'row' : ''}`}>
-        <InnerBlocks
-          allowedBlocks={ALLOWED_BLOCKS}
-          orientation="horizontal"
-          renderAppender={InnerBlocks.ButtonBlockAppender}
-        />
+      <div className={`tabs-container ${orientation === 'vertical' ? 'd-flex' : ''}`}>
+        {style === 'tabs' && (
+          <ul className="nav nav-tabs" id="myTab" role="tablist">
+            <InnerBlocks
+              allowedBlocks={ALLOWED_BLOCKS}
+              orientation="horizontal"
+              renderAppender={InnerBlocks.ButtonBlockAppender}
+            />
+          </ul>
+        )}
+
+        {style === 'pills' && (
+          <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <InnerBlocks
+              allowedBlocks={ALLOWED_BLOCKS}
+              orientation="horizontal"
+              renderAppender={InnerBlocks.ButtonBlockAppender}
+            />
+          </ul>
+        )}
+
+        {style === 'vertical' && (
+          <div className="d-flex">
+            <div className="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <InnerBlocks
+                allowedBlocks={ALLOWED_BLOCKS}
+                orientation="vertical"
+                renderAppender={InnerBlocks.ButtonBlockAppender}
+              />
+            </div>
+            <div className="tab-content" id="v-pills-tabContent">
+              <InnerBlocks.Content />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
