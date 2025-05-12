@@ -1,40 +1,36 @@
 import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
+import { useEffect } from '@wordpress/element';
 
-export default function Edit({ attributes, setAttributes }) {
-  const { title, tabId } = attributes;
+export default function Edit({ attributes, setAttributes, clientId }) {
+	const { tabId, tabLabel, isActive } = attributes;
 
-  const blockProps = useBlockProps();
+	// Generate tabId if missing
+	useEffect(() => {
+		if (!tabId) {
+			const newId = clientId.replace(/[^a-zA-Z0-9_-]/g, '');
+			setAttributes({ tabId: newId });
+		}
+	}, [tabId, clientId, setAttributes]);
 
-  // Generate a unique ID for each tab
-  const tabContentId = tabId || `tab-${Math.random().toString(36).substr(2, 9)}`;
+	const paneId = `pane-${tabId}`;
+	const headerId = `tab-${tabId}`;
 
-  return (
-    <div {...blockProps}>
-      <div className="nav-item" role="presentation">
-        <button
-          className="nav-link"
-          id={`${tabContentId}-tab`}
-          data-bs-toggle="tab"
-          data-bs-target={`#${tabContentId}`}
-          type="button"
-          role="tab"
-          aria-controls={tabContentId}
-          aria-selected="false"
-        >
-          <RichText
-            tagName="span"
-            value={title}
-            onChange={(val) => setAttributes({ title: val })}
-            placeholder="Enter tab title"
-          />
-        </button>
-      </div>
-      <div className="tab-pane fade" id={tabContentId} role="tabpanel" aria-labelledby={`${tabContentId}-tab`}>
-        <InnerBlocks
-          allowedBlocks={['core/paragraph', 'core/image', 'core/heading']}
-          renderAppender={InnerBlocks.ButtonBlockAppender}
-        />
-      </div>
-    </div>
-  );
+	return (
+		<div {...useBlockProps()}>
+			<RichText
+				tagName="div"
+				value={tabLabel}
+				onChange={(value) => setAttributes({ tabLabel: value })}
+				placeholder="Tab Label"
+			/>
+			<div
+				id={paneId}
+				className={`tab-pane fade${isActive ? ' show active' : ''}`}
+				role="tabpanel"
+				aria-labelledby={headerId}
+			>
+				<InnerBlocks />
+			</div>
+		</div>
+	);
 }

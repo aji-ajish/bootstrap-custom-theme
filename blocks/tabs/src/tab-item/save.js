@@ -1,29 +1,36 @@
 import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
 
-export default function Save({ attributes }) {
-  const { title, tabId } = attributes;
+export default function save({ attributes }) {
+	const { tabId, tabLabel, isActive } = attributes;
 
-  const tabContentId = tabId || `tab-${Math.random().toString(36).substr(2, 9)}`;
+	const headerId = `tab-${tabId}`;
+	const paneId = `pane-${tabId}`;
 
-  return (
-    <div {...useBlockProps.save()}>
-      <div className="nav-item" role="presentation">
-        <button
-          className="nav-link"
-          id={`${tabContentId}-tab`}
-          data-bs-toggle="tab"
-          data-bs-target={`#${tabContentId}`}
-          type="button"
-          role="tab"
-          aria-controls={tabContentId}
-          aria-selected="false"
-        >
-          <RichText.Content value={title} />
-        </button>
-      </div>
-      <div className="tab-pane fade" id={tabContentId} role="tabpanel" aria-labelledby={`${tabContentId}-tab`}>
-        <InnerBlocks.Content />
-      </div>
-    </div>
-  );
+	return (
+		<>
+			<li className="nav-item" role="presentation">
+				<button
+					className={`nav-link${isActive ? ' active' : ''}`}
+					id={headerId}
+					data-bs-toggle="tab"
+					data-bs-target={`#${paneId}`}
+					type="button"
+					role="tab"
+					aria-controls={paneId}
+					aria-selected={isActive ? 'true' : 'false'}
+				>
+					<RichText.Content value={tabLabel} />
+				</button>
+			</li>
+
+			<div
+				id={paneId}
+				className={`tab-pane fade${isActive ? ' show active' : ''}`}
+				role="tabpanel"
+				aria-labelledby={headerId}
+			>
+				<InnerBlocks.Content />
+			</div>
+		</>
+	);
 }
