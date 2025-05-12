@@ -1,23 +1,19 @@
 {
   "apiVersion": 2,
   "name": "bootstrap-custom-theme/tabs",
-  "title": "Tabs",
+  "title": "Bootstrap Tabs",
   "category": "layout",
-  "icon": "index-card",
-  "description": "A set of Bootstrap-style tabs",
-  "supports": {
-    "html": false
-  },
-  "attributes": {
-    "orientation": {
-      "type": "string",
-      "default": "horizontal"
-    },
-    "style": {
-      "type": "string",
-      "default": "tabs"
-    }
-  },
   "editorScript": "file:./build/index.js",
-  "style": "file:./style.css"
+  "editorStyle": "file:./build/index.css",
+  "style": "file:./build/style-index.css",
+  "attributes": {
+    "orientation": { "type": "string", "default": "horizontal" },
+    "tabStyle": { "type": "string", "default": "nav-tabs" },
+    "customClass": { "type": "string", "default": "" },
+    "customId": { "type": "string", "default": "" }
+  },
+  "supports": {
+    "html": false, 
+    "className": false 
+  }
 }

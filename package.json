@@ -20,8 +20,11 @@
     "@wordpress/blocks": "^14.11.0",
     "@wordpress/components": "^29.8.0",
     "@wordpress/element": "^6.22.0",
-    "@wordpress/scripts": "^30.15.0",
+    "@wordpress/scripts": "^30.16.0",
     "react": "^19.1.0",
     "react-draggable": "^4.4.6"
+  },
+  "dependencies": {
+    "classnames": "^2.5.1"
   }
 }

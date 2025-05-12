@@ -3,28 +3,17 @@
   "name": "bootstrap-custom-theme/tab-item",
   "title": "Tab Item",
   "parent": ["bootstrap-custom-theme/tabs"],
-  "category": "layout",
-  "icon": "welcome-widgets-menus",
-  "description": "Single tab panel with editable title and body",
+  "editorScript": "file:../build/tab-item.js",
+  "editorStyle": "file:../build/tab-item.css",
+  "style": "file:../build/tab-item-style.css",
+  "attributes": {
+    "tabId": { "type": "string" },
+    "title": { "type": "string", "default": "Tab" },
+    "customClass": { "type": "string", "default": "" },
+    "customId": { "type": "string", "default": "" }
+  },
   "supports": {
     "html": false,
-    "reusable": false
-  },
-  "attributes": {
-    "title": {
-      "type": "string",
-      "default": "Tab Title"
-    },
-    "tabId": {
-      "type": "string"
-    },
-    "buttonId": {
-      "type": "string"
-    },
-    "isActive": {
-      "type": "boolean",
-      "default": false
-    }
-  },
-  "editorScript": "file:../build/index.js"
+    "className": false 
+  }
 }

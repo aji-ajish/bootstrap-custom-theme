@@ -1,36 +1,55 @@
-import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { __ } from "@wordpress/i18n";
+import { PanelBody, TextControl } from "@wordpress/components";
+import {
+  InspectorControls,
+  useBlockProps,
+  InnerBlocks,
+} from "@wordpress/block-editor";
+import { useEffect } from "@wordpress/element";
 
-export default function Edit({ attributes, setAttributes, clientId }) {
-	const { tabId, tabLabel, isActive } = attributes;
+const ALLOWED_BLOCKS = ["core/paragraph", "core/heading", "core/image"];
 
-	// Generate tabId if missing
-	useEffect(() => {
-		if (!tabId) {
-			const newId = clientId.replace(/[^a-zA-Z0-9_-]/g, '');
-			setAttributes({ tabId: newId });
-		}
-	}, [tabId, clientId, setAttributes]);
+const Edit = ({ attributes, setAttributes, clientId }) => {
+  const { title, customId } = attributes;
 
-	const paneId = `pane-${tabId}`;
-	const headerId = `tab-${tabId}`;
+  useEffect(() => {
+    if (!customId) {
+      setAttributes({ customId: `tab-${clientId.replace(/[^a-z0-9]/g, "")}` });
+    }
+  }, []);
 
-	return (
-		<div {...useBlockProps()}>
-			<RichText
-				tagName="div"
-				value={tabLabel}
-				onChange={(value) => setAttributes({ tabLabel: value })}
-				placeholder="Tab Label"
-			/>
-			<div
-				id={paneId}
-				className={`tab-pane fade${isActive ? ' show active' : ''}`}
-				role="tabpanel"
-				aria-labelledby={headerId}
-			>
-				<InnerBlocks />
-			</div>
-		</div>
-	);
-}
+  return (
+    <div {...useBlockProps()}>
+      <InspectorControls>
+        <PanelBody title={__("Tab Settings")}>
+          <TextControl
+            label={__("Tab Title")}
+            value={title}
+            onChange={(value) => setAttributes({ title: value })}
+          />
+        </PanelBody>
+      </InspectorControls>
+
+      <div className="tab-content-wrapper">
+        <button className="nav-link" data-bs-toggle="tab">
+          {title || __("New Tab")}
+        </button>
+        <div className="tab-content-editor">
+          <InnerBlocks
+            allowedBlocks={ALLOWED_BLOCKS}
+            template={[
+              ["core/heading", { level: 3, placeholder: __("Tab Heading...") }],
+              [
+                "core/paragraph",
+                { placeholder: __("Tab content goes here...") },
+              ],
+            ]}
+            renderAppender={InnerBlocks.ButtonBlockAppender}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Edit;

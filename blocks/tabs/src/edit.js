@@ -1,139 +1,98 @@
-import {
-	useBlockProps,
-	InnerBlocks,
-	InspectorControls,
-} from '@wordpress/block-editor';
-import {
-	PanelBody,
-	SelectControl,
-	Button,
-	__experimentalVStack as VStack,
-} from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
+import { Button, PanelBody, SelectControl, TextControl } from '@wordpress/components';
+import { useBlockProps, InnerBlocks, InspectorControls } from '@wordpress/block-editor';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
+import { useEffect } from '@wordpress/element';
+import classnames from 'classnames';
 
-export default function Edit({ attributes, setAttributes, clientId }) {
-	const { orientation = 'horizontal', tabStyle = 'tabs' } = attributes;
+const ALLOWED_BLOCKS = ['bootstrap-custom-theme/tab-item'];
 
-	const ALLOWED_BLOCKS = ['bootstrap-custom-theme/tab-item'];
-	const { insertBlock, updateBlockAttributes, removeBlock } = useDispatch('core/block-editor');
+const Edit = ({ attributes, setAttributes, clientId }) => {
+  const { orientation, tabStyle, customClass, customId } = attributes;
 
-	const childBlocks = useSelect((select) =>
-		select('core/block-editor').getBlocks(clientId)
-	);
+  const { insertBlock } = useDispatch('core/block-editor');
+  const { innerBlockCount } = useSelect(
+    (select) => ({
+      innerBlockCount: select('core/block-editor').getBlockOrder(clientId).length,
+    }),
+    [clientId]
+  );
 
-	// Auto activate first tab if none active
-	useEffect(() => {
-		if (!childBlocks.some((b) => b.attributes.isActive)) {
-			const first = childBlocks[0];
-			if (first) {
-				updateBlockAttributes(first.clientId, { isActive: true });
-			}
-		}
-	}, [childBlocks]);
+  const addNewTab = () => {
+    const newTab = createBlock('bootstrap-custom-theme/tab-item', {
+      title: `Tab ${innerBlockCount + 1}`,
+      customId: `tab-${Date.now()}`,
+    });
+    insertBlock(newTab, innerBlockCount, clientId);
+  };
 
-	// Add default tab with content
-	const addNewTab = () => {
-		const tabIndex = childBlocks.length + 1;
-		const newTabId = `${clientId}-${Date.now()}`;
+  useEffect(() => {
+    // Initialize Bootstrap tabs in editor
+    if (typeof bootstrap?.Tab !== 'undefined') {
+      const tabElms = document.querySelectorAll('[data-bs-toggle="tab"]');
+      tabElms.forEach(tabEl => {
+        tabEl.addEventListener('click', (e) => {
+          e.preventDefault();
+          new bootstrap.Tab(tabEl).show();
+        });
+      });
+    }
+  }, [innerBlockCount]);
 
-		const newTabBlock = createBlock('bootstrap-custom-theme/tab-item', {
-			tabId: newTabId,
-			tabLabel: `Tab ${tabIndex}`,
-			isActive: false,
-		});
+  return (
+    <div {...useBlockProps()}>
+      <InspectorControls>
+        <PanelBody title={__('Tabs Settings')} initialOpen={true}>
+          <SelectControl
+            label={__('Tab Style')}
+            value={tabStyle}
+            options={[
+              { label: 'Tabs', value: 'nav-tabs' },
+              { label: 'Pills', value: 'nav-pills' },
+            ]}
+            onChange={(value) => setAttributes({ tabStyle: value })}
+          />
+          <SelectControl
+            label={__('Orientation')}
+            value={orientation}
+            options={[
+              { label: 'Horizontal', value: 'horizontal' },
+              { label: 'Vertical', value: 'vertical' },
+            ]}
+            onChange={(value) => setAttributes({ orientation: value })}
+          />
+          <TextControl
+            label={__('Custom ID')}
+            value={customId}
+            onChange={(value) => setAttributes({ customId: value })}
+          />
+          <TextControl
+            label={__('Custom Class')}
+            value={customClass}
+            onChange={(value) => setAttributes({ customClass: value })}
+          />
+          <Button
+            variant="primary"
+            onClick={addNewTab}
+            style={{ marginTop: '10px' }}
+          >
+            {__('Add New Tab')}
+          </Button>
+        </PanelBody>
+      </InspectorControls>
 
-		insertBlock(newTabBlock, childBlocks.length, clientId);
+      <div className={classnames('nav', tabStyle, customClass, {
+        'flex-column': orientation === 'vertical'
+      })} role="tablist">
+        <InnerBlocks 
+          allowedBlocks={ALLOWED_BLOCKS}
+          orientation="horizontal"
+          renderAppender={false}
+        />
+      </div>
+    </div>
+  );
+};
 
-		const defaultContent = createBlock('core/paragraph', {
-			content: `This is Tab ${tabIndex}`,
-		});
-		insertBlock(defaultContent, 0, newTabBlock.clientId);
-	};
-
-	const removeTab = (clientId) => {
-		removeBlock(clientId);
-	};
-
-	const navClasses = [
-		'nav',
-		tabStyle === 'pills' ? 'nav-pills' : 'nav-tabs',
-		orientation === 'vertical' ? 'flex-column' : '',
-	].join(' ');
-
-	return (
-		<div {...useBlockProps()}>
-			<InspectorControls>
-				<PanelBody title="Tab Settings" initialOpen={true}>
-					<VStack spacing={3}>
-						<SelectControl
-							label="Tab Style"
-							value={tabStyle}
-							options={[
-								{ label: 'Tabs', value: 'tabs' },
-								{ label: 'Pills', value: 'pills' },
-							]}
-							onChange={(value) => setAttributes({ tabStyle: value })}
-						/>
-						<SelectControl
-							label="Orientation"
-							value={orientation}
-							options={[
-								{ label: 'Horizontal', value: 'horizontal' },
-								{ label: 'Vertical', value: 'vertical' },
-							]}
-							onChange={(value) => setAttributes({ orientation: value })}
-						/>
-						<Button
-							variant="primary"
-							onClick={addNewTab}
-							style={{ marginTop: '10px' }}
-						>
-							+ Add New Tab
-						</Button>
-					</VStack>
-				</PanelBody>
-			</InspectorControls>
-
-			<ul className={navClasses} role="tablist">
-				{childBlocks.map((block, index) => {
-					const { tabId, tabLabel, isActive } = block.attributes;
-					const headerId = `tab-${tabId}`;
-					const paneId = `pane-${tabId}`;
-					return (
-						<li className="nav-item d-flex align-items-center" key={block.clientId}>
-							<button
-								className={`nav-link${isActive ? ' active' : ''}`}
-								id={headerId}
-								data-bs-toggle="tab"
-								data-bs-target={`#${paneId}`}
-								type="button"
-								role="tab"
-								aria-controls={paneId}
-								aria-selected={isActive ? 'true' : 'false'}
-							>
-								{tabLabel || `Tab ${index + 1}`}
-							</button>
-							<Button
-								variant="link"
-								onClick={() => removeTab(block.clientId)}
-								className="text-danger ms-2"
-								aria-label="Remove tab"
-							>
-								✕
-							</Button>
-						</li>
-					);
-				})}
-			</ul>
-
-			<div className="tab-content">
-				<InnerBlocks
-					allowedBlocks={ALLOWED_BLOCKS}
-					orientation="vertical"
-				/>
-			</div>
-		</div>
-	);
-}
+export default Edit;

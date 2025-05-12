@@ -1,0 +1,12 @@
+/* Add your default tab styles here */
+.my-tabs-class {
+  margin-top: 20px;
+}
+/* Custom CSS for Tab Styles */
+.nav-pills .nav-link.active {
+  background-color: #007bff;
+}
+
+.nav-tabs .nav-link.active {
+  border-color: #007bff;
+}
