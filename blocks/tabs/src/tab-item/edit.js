@@ -71,7 +71,6 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
 
         <div className="tab-content-editor">
           <InnerBlocks
-            allowedBlocks={ALLOWED_BLOCKS}
             template={[
               [
                 "core/paragraph",

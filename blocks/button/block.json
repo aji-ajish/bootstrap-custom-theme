@@ -1,0 +1,53 @@
+{
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/button",
+  "title": "Bootstrap Button",
+  "category": "custom-blocks",
+  "icon": "button",
+  "description": "Bootstrap styled button with customizable options",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/index.css",
+  "style": "file:./build/style-index.css",
+  "attributes": {
+    "text": {
+      "type": "string",
+      "default": "Click me"
+    },
+    "variant": {
+      "type": "string",
+      "default": "primary"
+    },
+    "size": {
+      "type": "string",
+      "default": ""
+    },
+    "outline": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "tagName": {
+      "type": "string",
+      "default": "button"
+    },
+    "url": {
+      "type": "string",
+      "default": ""
+    },
+    "customClass": {
+      "type": "string",
+      "default": ""
+    },
+    "customId": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": false
+  }
+}

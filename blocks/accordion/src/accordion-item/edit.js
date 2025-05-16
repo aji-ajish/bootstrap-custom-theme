@@ -80,7 +80,6 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
         <div className={`accordion-collapse ${isOpen ? 'show' : ''}`}>
           <div className="accordion-body">
             <InnerBlocks 
-              allowedBlocks={ALLOWED_BLOCKS}
               template={[
                 ['core/paragraph', { placeholder: __('Accordion content goes here...') }]
               ]}
