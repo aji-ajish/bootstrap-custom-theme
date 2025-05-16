@@ -2,7 +2,7 @@
   "apiVersion": 2,
   "name": "bootstrap-custom-theme/tabs",
   "title": "Bootstrap Tabs",
-  "category": "layout",
+  "category": "custom-blocks",
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/index.css",
   "style": "file:./build/style-index.css",

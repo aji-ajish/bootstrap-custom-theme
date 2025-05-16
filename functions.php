@@ -18,6 +18,14 @@ function bootstrap_custom_theme_enqueue_scripts()
         null,
         true
     );
+
+    wp_enqueue_script(
+        'custom-accordion-frontend',
+        get_template_directory_uri() . '/assets/js/accordion.js',
+        array('bootstrap-js'), // Depends on Bootstrap
+        null,
+        true
+    );
 }
 add_action('wp_enqueue_scripts', 'bootstrap_custom_theme_enqueue_scripts');
 
@@ -70,16 +78,9 @@ function bootstrap_custom_theme_register_blocks()
     register_block_type_from_metadata(__DIR__ . '/blocks/row');
     register_block_type_from_metadata(__DIR__ . '/blocks/column');
     register_block_type_from_metadata(__DIR__ . '/blocks/accordion');
+    register_block_type_from_metadata(__DIR__ . '/blocks/accordion/accordion-item');
     register_block_type_from_metadata(__DIR__ . '/blocks/tabs');
+    register_block_type_from_metadata(__DIR__ . '/blocks/tabs/tab-item');
 }
 add_action('init', 'bootstrap_custom_theme_register_blocks');
 
-function register_bootstrap_tabs_blocks()
-{
-    // Register main tabs block
-    register_block_type(__DIR__ . '/blocks/tabs');
-
-    // Explicitly register tab item block
-    register_block_type(__DIR__ . '/blocks/tabs/tab-item');
-}
-add_action('init', 'register_bootstrap_tabs_blocks');

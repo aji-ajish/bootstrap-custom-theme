@@ -1,0 +1,29 @@
+{
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/accordion-item",
+  "title": "Accordion Item",
+  "parent": ["bootstrap-custom-theme/accordion"],
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Accordion Item"
+    },
+    "itemId": {
+      "type": "string",
+      "default": ""
+    },
+    "isOpen": {
+      "type": "boolean",
+      "default": false
+    },
+    "customClass": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": false,
+    "inserter": false
+  }
+}

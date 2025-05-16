@@ -1,0 +1,28 @@
+{
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/accordion",
+  "title": "Bootstrap Accordion",
+  "category": "layout",
+  "description": "A customizable Bootstrap accordion block",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/index.css",
+  "style": "file:./build/style-index.css",
+  "attributes": {
+    "accordionType": {
+      "type": "string",
+      "default": "default"
+    },
+    "customId": {
+      "type": "string",
+      "default": ""
+    },
+    "customClass": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": false
+  }
+}
