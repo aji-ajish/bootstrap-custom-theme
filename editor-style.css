@@ -15,6 +15,13 @@
   padding: 15px;
 }
 
+/* Row */
+.block-editor-block-list__block[data-type="bootstrap-custom-theme/tabs"]>.nav.nav-tabs>.block-editor-inner-blocks {
+  /* Your styles here */
+  width: 80%;
+}
+
+
 /* Editor only styling */
 .block-editor-block-list__block[data-type="bootstrap-custom-theme/row"] {
   border: 1px dashed #ddd;

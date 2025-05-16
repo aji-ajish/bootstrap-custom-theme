@@ -1,33 +1,35 @@
-import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
+import { useBlockProps, InnerBlocks } from "@wordpress/block-editor";
 
 const Save = ({ attributes }) => {
   const { customId, title } = attributes;
-  const blockProps = useBlockProps.save({
-    className: 'nav-item'
-  });
 
   return (
     <>
-      <li {...blockProps} role="presentation">
+      <div className="tabs-block__button">
         <button
-          className="nav-link"
+          className={`nav-link${attributes.isActive ? ' active' : ''}`}
           id={`${customId}-tab`}
           data-bs-toggle="tab"
           data-bs-target={`#${customId}`}
           type="button"
           role="tab"
-          aria-controls={customId}
+          aria-selected={attributes.isActive ? 'true' : 'false'}
+    tabIndex={attributes.isActive ? undefined : '-1'}
+    data-active={attributes.isActive ? 'true' : 'false'}
         >
           {title}
         </button>
-      </li>
-      <div 
-        className="tab-pane fade" 
-        id={customId} 
-        role="tabpanel" 
-        aria-labelledby={`${customId}-tab`}
-      >
-        <InnerBlocks.Content />
+      </div>
+
+      <div className="tabs-block__pane">
+        <div
+          className={`tab-pane fade${attributes.isActive ? ' show active' : ''}`}
+          id={customId}
+          role="tabpanel"
+          aria-labelledby={`${customId}-tab`}
+        >
+          <InnerBlocks.Content />
+        </div>
       </div>
     </>
   );

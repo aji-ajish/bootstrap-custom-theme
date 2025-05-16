@@ -3,14 +3,12 @@
   "name": "bootstrap-custom-theme/tab-item",
   "title": "Tab Item",
   "parent": ["bootstrap-custom-theme/tabs"],
-  "editorScript": "file:../build/tab-item.js",
-  "editorStyle": "file:../build/tab-item.css",
-  "style": "file:../build/tab-item-style.css",
   "attributes": {
     "tabId": { "type": "string" },
     "title": { "type": "string", "default": "Tab" },
     "customClass": { "type": "string", "default": "" },
-    "customId": { "type": "string", "default": "" }
+    "customId": { "type": "string", "default": "" },
+    "isActive": { "type": "boolean", "default": false }
   },
   "supports": {
     "html": false,

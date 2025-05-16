@@ -9,6 +9,15 @@ function bootstrap_custom_theme_enqueue_scripts()
 
     // Enqueue Bootstrap JS (if needed)
     wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js', array(), null, true);
+
+    // Enqueue custom frontend tabs.js (AFTER Bootstrap JS)
+    wp_enqueue_script(
+        'custom-tabs-frontend',
+        get_template_directory_uri() . '/assets/js/tabs.js',
+        array('bootstrap-js'), // Make sure bootstrap is loaded first
+        null,
+        true
+    );
 }
 add_action('wp_enqueue_scripts', 'bootstrap_custom_theme_enqueue_scripts');
 
@@ -61,14 +70,15 @@ function bootstrap_custom_theme_register_blocks()
     register_block_type_from_metadata(__DIR__ . '/blocks/row');
     register_block_type_from_metadata(__DIR__ . '/blocks/column');
     register_block_type_from_metadata(__DIR__ . '/blocks/accordion');
-    register_block_type_from_metadata( __DIR__ . '/blocks/tabs' );
+    register_block_type_from_metadata(__DIR__ . '/blocks/tabs');
 }
 add_action('init', 'bootstrap_custom_theme_register_blocks');
 
-function register_bootstrap_tabs_blocks() {
+function register_bootstrap_tabs_blocks()
+{
     // Register main tabs block
     register_block_type(__DIR__ . '/blocks/tabs');
-    
+
     // Explicitly register tab item block
     register_block_type(__DIR__ . '/blocks/tabs/tab-item');
 }
