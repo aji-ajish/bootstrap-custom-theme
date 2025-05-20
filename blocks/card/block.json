@@ -1,0 +1,53 @@
+{
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/card",
+  "title": "Bootstrap Card",
+  "category": "custom-blocks",
+  "description": "A customizable Bootstrap Card block",
+  "icon": "welcome-widgets-menus",
+  "supports": {
+    "html": false,
+    "className": false
+  },
+  "attributes": {
+    "customId": {
+      "type": "string",
+      "default": ""
+    },
+    "customClass": {
+      "type": "string",
+      "default": ""
+    },
+    "border": {
+      "type": "string",
+      "default": ""
+    },
+    "background": {
+      "type": "string",
+      "default": ""
+    },
+    "textColor": {
+      "type": "string",
+      "default": ""
+    },
+    "width": {
+      "type": "string",
+      "default": ""
+    },
+    "showHeader": {
+      "type": "boolean",
+      "default": true
+    },
+    "showFooter": {
+      "type": "boolean",
+      "default": false
+    },
+    "imagePosition": {
+      "type": "string",
+      "default": "none"
+    }
+  },
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css"
+}

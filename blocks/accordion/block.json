@@ -2,7 +2,7 @@
   "apiVersion": 2,
   "name": "bootstrap-custom-theme/accordion",
   "title": "Bootstrap Accordion",
-  "category": "layout",
+  "category": "custom-blocks",
   "description": "A customizable Bootstrap accordion block",
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/index.css",
