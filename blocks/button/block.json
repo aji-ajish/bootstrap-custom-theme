@@ -37,6 +37,18 @@
       "type": "string",
       "default": ""
     },
+    "openInNewTab": {
+      "type": "boolean",
+      "default": false
+    },
+    "role": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonType": {
+      "type": "string",
+      "default": "button"
+    },
     "customClass": {
       "type": "string",
       "default": ""
@@ -44,6 +56,10 @@
     "customId": {
       "type": "string",
       "default": ""
+    },
+    "removeButton": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

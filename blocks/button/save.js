@@ -1,4 +1,4 @@
-import { useBlockProps, RichText } from '@wordpress/block-editor';
+import { useBlockProps, RichText } from "@wordpress/block-editor";
 
 const Save = ({ attributes }) => {
   const {
@@ -9,41 +9,41 @@ const Save = ({ attributes }) => {
     disabled,
     tagName,
     url,
+    openInNewTab,
+    role,
     customClass,
     customId,
+    buttonType,
   } = attributes;
 
+  const props = useBlockProps.save();
   const btnClass = `btn ${
     outline ? `btn-outline-${variant}` : `btn-${variant}`
   } ${size} ${customClass}`.trim();
 
-  const blockProps = useBlockProps.save();
-
-  if (tagName === 'a') {
-    return (
-      <a
-        {...blockProps}
-        id={customId || undefined}
-        href={url || '#'}
-        className={btnClass}
-        aria-disabled={disabled}
-        tabIndex={disabled ? -1 : undefined}
-        onClick={(e) => disabled && e.preventDefault()}
-      >
-        <RichText.Content value={text} />
-      </a>
-    );
-  }
-
-  return (
-    <button
-      {...blockProps}
+  return tagName === "a" ? (
+    <a
+      {...props}
       id={customId || undefined}
-      type="button"
+      href={url || "#"}
+      className={btnClass}
+      aria-disabled={disabled}
+      target={openInNewTab ? "_blank" : undefined}
+      rel={openInNewTab ? "noopener noreferrer" : undefined}
+      role={role || undefined}
+    >
+      <RichText.Content tagName="span" value={text} />
+    </a>
+  ) : (
+    <button
+      {...props}
+      id={customId || undefined}
+      type={buttonType || "button"}
       className={btnClass}
       disabled={disabled}
+      role={role || undefined}
     >
-      <RichText.Content value={text} />
+      <RichText.Content tagName="span" value={text} />
     </button>
   );
 };

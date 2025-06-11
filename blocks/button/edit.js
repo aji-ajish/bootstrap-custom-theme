@@ -2,14 +2,17 @@ import { __ } from "@wordpress/i18n";
 import {
   PanelBody,
   SelectControl,
-  ToggleControl,
   TextControl,
+  ToggleControl,
+  Button,
 } from "@wordpress/components";
 import {
   useBlockProps,
   RichText,
   InspectorControls,
+  store as blockEditorStore,
 } from "@wordpress/block-editor";
+import { useDispatch } from "@wordpress/data";
 
 const VARIANTS = [
   "primary",
@@ -29,7 +32,21 @@ const SIZES = [
   { label: __("Large"), value: "btn-lg" },
 ];
 
-const Edit = ({ attributes, setAttributes }) => {
+const ROLES = [
+  { label: __("Default"), value: "" },
+  { label: __("Button"), value: "button" },
+  { label: __("Link"), value: "link" },
+  { label: __("Submit"), value: "submit" },
+  { label: __("Reset"), value: "reset" },
+];
+
+const BUTTON_TYPES = [
+  { label: __("Button"), value: "button" },
+  { label: __("Submit"), value: "submit" },
+  { label: __("Reset"), value: "reset" },
+];
+
+const Edit = ({ attributes, setAttributes, clientId }) => {
   const {
     text,
     variant,
@@ -38,30 +55,22 @@ const Edit = ({ attributes, setAttributes }) => {
     disabled,
     tagName,
     url,
+    openInNewTab,
+    role,
     customClass,
     customId,
+    buttonType,
   } = attributes;
 
   const blockProps = useBlockProps();
+  const { removeBlock } = useDispatch(blockEditorStore);
 
-  // Build the class string
   const btnClass = `btn ${
     outline ? `btn-outline-${variant}` : `btn-${variant}`
   } ${size} ${customClass}`.trim();
 
-  const commonProps = {
-    id: customId || undefined,
-    className: btnClass,
-    disabled: tagName === "button" ? disabled : undefined,
-    "aria-disabled": tagName === "a" ? disabled : undefined,
-    tabIndex: tagName === "a" && disabled ? -1 : undefined,
-    href: tagName === "a" ? url || "#" : undefined,
-    onClick:
-      tagName === "a" && disabled ? (e) => e.preventDefault() : undefined,
-  };
-
   return (
-    <div {...blockProps}>
+    <>
       <InspectorControls>
         <PanelBody title={__("Button Settings")}>
           <SelectControl
@@ -95,12 +104,33 @@ const Edit = ({ attributes, setAttributes }) => {
             ]}
             onChange={(value) => setAttributes({ tagName: value })}
           />
-          {tagName === "a" && (
-            <TextControl
-              label={__("URL")}
-              value={url}
-              onChange={(value) => setAttributes({ url: value })}
+          <SelectControl
+            label={__("Role")}
+            value={role}
+            options={ROLES}
+            onChange={(value) => setAttributes({ role: value })}
+          />
+          {tagName === "button" && (
+            <SelectControl
+              label={__("Button Type")}
+              value={buttonType}
+              options={BUTTON_TYPES}
+              onChange={(value) => setAttributes({ buttonType: value })}
             />
+          )}
+          {tagName === "a" && (
+            <>
+              <TextControl
+                label={__("URL")}
+                value={url}
+                onChange={(value) => setAttributes({ url: value })}
+              />
+              <ToggleControl
+                label={__("Open in new tab")}
+                checked={openInNewTab}
+                onChange={(value) => setAttributes({ openInNewTab: value })}
+              />
+            </>
           )}
           <TextControl
             label={__("Custom ID")}
@@ -112,31 +142,58 @@ const Edit = ({ attributes, setAttributes }) => {
             value={customClass}
             onChange={(value) => setAttributes({ customClass: value })}
           />
+
+          <Button
+            variant="secondary"
+            isDestructive
+            onClick={() => removeBlock(clientId)}
+            style={{ marginTop: "1rem" }}
+          >
+            {__("Remove Button")}
+          </Button>
         </PanelBody>
       </InspectorControls>
 
       {tagName === "a" ? (
-        <a {...commonProps}>
+        <a
+          {...blockProps}
+          id={customId || undefined}
+          href={url || "#"}
+          className={btnClass}
+          aria-disabled={disabled}
+          target={openInNewTab ? "_blank" : undefined}
+          rel={openInNewTab ? "noopener noreferrer" : undefined}
+          role={role || undefined}
+        >
           <RichText
             tagName="span"
             value={text}
             onChange={(value) => setAttributes({ text: value })}
-            placeholder={__("Button text…")}
+            placeholder={__("Button text...")}
             allowedFormats={["core/bold", "core/italic"]}
+            keepPlaceholderOnFocus
           />
         </a>
       ) : (
-        <button type="button" {...commonProps}>
+        <button
+          {...blockProps}
+          id={customId || undefined}
+          type={buttonType || "button"}
+          className={btnClass}
+          disabled={disabled}
+          role={role || undefined}
+        >
           <RichText
             tagName="span"
             value={text}
             onChange={(value) => setAttributes({ text: value })}
-            placeholder={__("Button text…")}
+            placeholder={__("Button text...")}
             allowedFormats={["core/bold", "core/italic"]}
+            keepPlaceholderOnFocus
           />
         </button>
       )}
-    </div>
+    </>
   );
 };
 
