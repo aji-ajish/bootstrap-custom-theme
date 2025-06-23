@@ -114,16 +114,7 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
       </InspectorControls>
 
       {/* Visual debug area */}
-      <div style={{ 
-        border: '1px dashed #ccc', 
-        padding: 10,
-        marginBottom: 10,
-        backgroundColor: '#f5f5f5'
-      }}>
-        <strong>Debug Info:</strong>
-        <div>Block Count: {innerBlocks.length}</div>
-        <div>Client ID: {clientId}</div>
-      </div>
+      
 
       <InnerBlocks
         allowedBlocks={ALLOWED_BLOCKS}

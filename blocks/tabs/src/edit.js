@@ -109,6 +109,8 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
     (block) => block.clientId === editingTabId
   );
 
+  
+
   return (
     <div {...useBlockProps()}>
       <InspectorControls>

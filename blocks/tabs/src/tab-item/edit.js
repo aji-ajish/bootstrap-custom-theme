@@ -88,7 +88,7 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
                 onClick={handleRemove}
                 style={{
                   background: "none",
-                  border: "none",
+                  border: "1px solid red",
                   color: "red",
                   cursor: "pointer",
                 }}
@@ -99,7 +99,6 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
             </div>
 
             <InnerBlocks
-              allowedBlocks={["core/paragraph", "core/heading", "core/image"]}
               renderAppender={InnerBlocks.ButtonBlockAppender}
             />
           </div>
