@@ -1,5 +1,5 @@
 import { __ } from "@wordpress/i18n";
-import { PanelBody, TextControl, CheckboxControl } from "@wordpress/components";
+import { PanelBody, TextControl, CheckboxControl,Button } from "@wordpress/components";
 import {
   InspectorControls,
   useBlockProps,
@@ -8,8 +8,6 @@ import {
 import { useEffect } from "@wordpress/element";
 import { useDispatch, useSelect } from "@wordpress/data";
 import { store as blockEditorStore } from "@wordpress/block-editor";
-
-const ALLOWED_BLOCKS = ["core/paragraph", "core/heading", "core/image"];
 
 const Edit = ({ attributes, setAttributes, clientId }) => {
   const { title, customId, isActive, customClass } = attributes;
@@ -79,10 +77,19 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
                 checked={isActive}
                 onChange={(value) => setAttributes({ isActive: value })}
               />
+              <Button
+                onClick={handleRemove}
+                style={{
+                  background: "red",
+                  color: "#fff"
+                }}
+              >
+                Remove
+              </Button>
             </PanelBody>
           </InspectorControls>
           <div {...blockProps}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <strong>{title || __("New Tab")}</strong>
               <button
                 onClick={handleRemove}
@@ -96,11 +103,9 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
               >
                 ✕
               </button>
-            </div>
+            </div> */}
 
-            <InnerBlocks
-              renderAppender={InnerBlocks.ButtonBlockAppender}
-            />
+            <InnerBlocks renderAppender={InnerBlocks.ButtonBlockAppender} />
           </div>
         </>
       )}
