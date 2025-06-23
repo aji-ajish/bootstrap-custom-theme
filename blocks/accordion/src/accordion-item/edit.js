@@ -1,27 +1,34 @@
-import { __ } from '@wordpress/i18n';
-import { 
-  PanelBody, 
-  TextControl, 
+import { __ } from "@wordpress/i18n";
+import {
+  PanelBody,
+  TextControl,
   Button,
-  ToggleControl 
-} from '@wordpress/components';
-import { 
-  InspectorControls, 
+  ToggleControl,
+} from "@wordpress/components";
+import {
+  InspectorControls,
   useBlockProps,
-  InnerBlocks
-} from '@wordpress/block-editor';
-import { useDispatch } from '@wordpress/data';
-import React from 'react';
+  InnerBlocks,
+} from "@wordpress/block-editor";
+import { useDispatch } from "@wordpress/data";
+import React from "react";
 
-const ALLOWED_BLOCKS = ['core/paragraph', 'core/heading', 'core/image', 'core/list'];
+const ALLOWED_BLOCKS = [
+  "core/paragraph",
+  "core/heading",
+  "core/image",
+  "core/list",
+];
 
 const Edit = ({ attributes, setAttributes, clientId }) => {
   const { title, itemId, isOpen, customClass } = attributes;
-  const { removeBlock } = useDispatch('core/block-editor');
+  const { removeBlock } = useDispatch("core/block-editor");
 
   React.useEffect(() => {
     if (!itemId) {
-      setAttributes({ itemId: `accordion-item-${Math.random().toString(36).substr(2, 9)}` });
+      setAttributes({
+        itemId: `accordion-item-${Math.random().toString(36).substr(2, 9)}`,
+      });
     }
   }, [itemId, setAttributes]);
 
@@ -32,25 +39,25 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
   return (
     <div {...useBlockProps()}>
       <InspectorControls>
-        <PanelBody title={__('Item Settings')}>
+        <PanelBody title={__("Item Settings")}>
           <TextControl
-            label={__('Title')}
+            label={__("Title")}
             value={title}
             onChange={(value) => setAttributes({ title: value })}
           />
           <TextControl
-            label={__('Item ID')}
+            label={__("Item ID")}
             value={itemId}
             onChange={(value) => setAttributes({ itemId: value })}
-            help={__('Unique ID for this item (auto-generated if empty)')}
+            help={__("Unique ID for this item (auto-generated if empty)")}
           />
           <ToggleControl
-            label={__('Open by default')}
+            label={__("Open by default")}
             checked={isOpen}
             onChange={() => setAttributes({ isOpen: !isOpen })}
           />
           <TextControl
-            label={__('Custom Class')}
+            label={__("Custom Class")}
             value={customClass}
             onChange={(value) => setAttributes({ customClass: value })}
           />
@@ -59,7 +66,7 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
 
       <div className="accordion-item-editor">
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <button
+          <button
             onClick={handleRemove}
             style={{
               background: "none",
@@ -70,18 +77,23 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
           >
             ✕
           </button>
-          <button className={`accordion-button ${isOpen ? '' : 'collapsed'}`} type="button" style={{ pointerEvents: 'none' }}>
+          <button
+            className={`accordion-button ${isOpen ? "" : "collapsed"}`}
+            type="button"
+            style={{ pointerEvents: "none" }}
+          >
             {title || __("New Tab")}
           </button>
-          
         </div>
-        
-        
-        <div className={`accordion-collapse ${isOpen ? 'show' : ''}`}>
+
+        <div className={`accordion-collapse ${isOpen ? "show" : ""}`}>
           <div className="accordion-body">
-            <InnerBlocks 
+            <InnerBlocks
               template={[
-                ['core/paragraph', { placeholder: __('Accordion content goes here...') }]
+                [
+                  "core/paragraph",
+                  { placeholder: __("Accordion content goes here...") },
+                ],
               ]}
               renderAppender={InnerBlocks.ButtonBlockAppender}
             />

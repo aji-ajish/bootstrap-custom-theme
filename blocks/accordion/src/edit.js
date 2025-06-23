@@ -1,90 +1,142 @@
-import { __ } from '@wordpress/i18n';
-import { 
-  Button, 
-  PanelBody, 
-  SelectControl, 
-  TextControl
-} from '@wordpress/components';
-import { 
-  useBlockProps, 
-  InnerBlocks, 
-  InspectorControls 
-} from '@wordpress/block-editor';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { createBlock } from '@wordpress/blocks';
+import { __ } from "@wordpress/i18n";
+import { PanelBody, Button, SelectControl, TextControl } from "@wordpress/components";
+import { useBlockProps, InspectorControls, InnerBlocks } from "@wordpress/block-editor";
+import { useSelect, useDispatch } from "@wordpress/data";
+import { createBlock } from "@wordpress/blocks";
+import { useEffect, useState } from "@wordpress/element";
 
-const ALLOWED_BLOCKS = ['bootstrap-custom-theme/accordion-item'];
+const ALLOWED_BLOCKS = ["bootstrap-custom-theme/accordion-item"];
 
 const Edit = ({ attributes, setAttributes, clientId }) => {
   const { accordionType, customId, customClass } = attributes;
+  const [forceUpdate, setForceUpdate] = useState(0); // Force re-render
   
-  // Generate and set a stable unique customId if empty
-  React.useEffect(() => {
+  // Get block editor data
+  const { getBlocks, getBlockOrder } = useSelect("core/block-editor");
+  const { insertBlock, replaceInnerBlocks } = useDispatch("core/block-editor");
+
+  // Get current blocks - using both methods for debugging
+  const innerBlocks = getBlocks(clientId);
+  const innerBlockIds = getBlockOrder(clientId);
+  
+  console.log('Current blocks (objects):', innerBlocks);
+  console.log('Current block IDs:', innerBlockIds);
+
+  // Initialize accordion
+  useEffect(() => {
     if (!customId) {
-      setAttributes({ customId: `accordion-${Math.random().toString(36).substr(2, 9)}` });
+      setAttributes({ customId: `accordion-${Math.random().toString(36).slice(2, 11)}` });
     }
-  }, [customId, setAttributes]);
 
-  // Get inner block count reactively
-  const innerBlockOrder = useSelect(
-    (select) => select('core/block-editor').getBlockOrder(clientId),
-    [clientId]
-  );
-  
-  const innerBlockCount = innerBlockOrder?.length || 0;
+    if (innerBlocks.length === 0) {
+      console.log('Initializing first item');
+      const firstBlock = createBlock("bootstrap-custom-theme/accordion-item", {
+        title: "Accordion Item #1",
+        isOpen: accordionType !== "always-open",
+        itemId: `item-${Date.now()}`,
+      });
+      replaceInnerBlocks(clientId, [firstBlock]);
+    }
+  }, []);
 
-  const { insertBlock } = useDispatch('core/block-editor');
+  const addNewItem = async () => {
+    console.log('Attempting to add item...');
+    
+    try {
+      // Create new item
+      const newItem = createBlock("bootstrap-custom-theme/accordion-item", {
+        title: `Accordion Item #${innerBlocks.length + 1}`,
+        isOpen: accordionType === "always-open",
+        itemId: `item-${Date.now()}`,
+      });
 
-  const addNewItem = () => {
-    const newItem = createBlock('bootstrap-custom-theme/accordion-item', {
-      title: `Accordion Item ${innerBlockCount + 1}`,
-      itemId: `accordion-item-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      isOpen: innerBlockCount === 0 && accordionType !== 'always-open' // open first item by default only for non-always-open
-    });
-    insertBlock(newItem, innerBlockCount, clientId);
+      console.log('Created block:', newItem);
+
+      // Method 1: Try insertBlock first
+      await insertBlock(newItem, innerBlocks.length, clientId);
+      console.log('insertBlock completed');
+
+      // Force UI update if needed
+      setForceUpdate(Date.now());
+
+      // Fallback check after 500ms
+      setTimeout(() => {
+        const updatedBlocks = getBlocks(clientId);
+        if (!updatedBlocks.some(block => block.clientId === newItem.clientId)) {
+          console.warn('Block not inserted, trying replaceInnerBlocks');
+          replaceInnerBlocks(clientId, [...innerBlocks, newItem]);
+        }
+      }, 500);
+
+    } catch (error) {
+      console.error('Failed to add item:', error);
+      // Final fallback - direct DOM manipulation (last resort)
+      const fallbackAdd = () => {
+        const container = document.querySelector(`[data-block="${clientId}"] .block-editor-inner-blocks`);
+        if (container) {
+          container.insertAdjacentHTML('beforeend', `
+            <div data-block="${newItem.clientId}" class="wp-block bootstrap-custom-theme-accordion-item">
+              [Accordion Item - please save and refresh]
+            </div>
+          `);
+        }
+      };
+      fallbackAdd();
+    }
   };
 
   return (
-    <div {...useBlockProps()}>
+    <div {...useBlockProps({ key: forceUpdate })}> {/* Force re-render */}
       <InspectorControls>
-        <PanelBody title={__('Accordion Settings')}>
+        <PanelBody title={__("Accordion Settings")}>
           <SelectControl
-            label={__('Accordion Type')}
+            label={__("Accordion Type")}
             value={accordionType}
             options={[
-              { label: __('Default Accordion'), value: 'default' },
-              { label: __('Flush Accordion'), value: 'flush' },
-              { label: __('Always Open Accordion'), value: 'always-open' }
+              { label: "Default", value: "default" },
+              { label: "Flush", value: "flush" },
+              { label: "Always Open", value: "always-open" },
             ]}
-            onChange={(value) => setAttributes({ accordionType: value })}
+            onChange={(val) => setAttributes({ accordionType: val })}
           />
           <TextControl
-            label={__('Custom ID')}
+            label="Custom ID"
             value={customId}
-            onChange={(value) => setAttributes({ customId: value })}
-            help={__('Unique ID for the accordion (required for proper functionality)')}
+            onChange={(val) => setAttributes({ customId: val })}
           />
           <TextControl
-            label={__('Custom Class')}
+            label="Custom Class"
             value={customClass}
-            onChange={(value) => setAttributes({ customClass: value })}
+            onChange={(val) => setAttributes({ customClass: val })}
           />
           <Button
             variant="primary"
             onClick={addNewItem}
-            style={{ marginTop: '10px' }}
+            style={{ marginTop: 10 }}
           >
-            {__('Add New Item')}
+            {__("Add New Item")}
           </Button>
         </PanelBody>
       </InspectorControls>
 
-      <div className="accordion-editor-wrapper">
-        <InnerBlocks 
-          allowedBlocks={ALLOWED_BLOCKS}
-          renderAppender={false}
-        />
+      {/* Visual debug area */}
+      <div style={{ 
+        border: '1px dashed #ccc', 
+        padding: 10,
+        marginBottom: 10,
+        backgroundColor: '#f5f5f5'
+      }}>
+        <strong>Debug Info:</strong>
+        <div>Block Count: {innerBlocks.length}</div>
+        <div>Client ID: {clientId}</div>
       </div>
+
+      <InnerBlocks
+        allowedBlocks={ALLOWED_BLOCKS}
+        renderAppender={false}
+        orientation="vertical"
+        templateLock={false}
+      />
     </div>
   );
 };

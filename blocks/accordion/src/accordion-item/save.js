@@ -1,8 +1,7 @@
 import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 
 const Save = ({ attributes }) => {
-  const { title, itemId, isOpen, customClass } = attributes;
-  
+  const { title, itemId, customClass, isOpen } = attributes;
   const headingId = `heading-${itemId}`;
   const collapseId = `collapse-${itemId}`;
 
@@ -14,7 +13,7 @@ const Save = ({ attributes }) => {
           type="button"
           data-bs-toggle="collapse"
           data-bs-target={`#${collapseId}`}
-          aria-expanded={isOpen ? 'true' : 'false'}
+          aria-expanded={isOpen}
           aria-controls={collapseId}
         >
           {title}

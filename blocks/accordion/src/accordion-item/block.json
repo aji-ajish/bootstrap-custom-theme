@@ -12,13 +12,13 @@
       "type": "string",
       "default": ""
     },
-    "isOpen": {
-      "type": "boolean",
-      "default": false
-    },
     "customClass": {
       "type": "string",
       "default": ""
+    },
+    "isOpen": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

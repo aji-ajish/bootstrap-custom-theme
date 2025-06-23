@@ -21,8 +21,13 @@
       "default": ""
     }
   },
+  "usesContext": ["postId"],
+  "providesContext": {
+    "accordionId": "customId"
+  },
   "supports": {
     "html": false,
-    "className": false
+    "className": false,
+    "anchor": true
   }
 }
