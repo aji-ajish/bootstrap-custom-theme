@@ -4,7 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!nav) {
       nav = tabsBlock.querySelector(".nav[role='tablist']");
     }
+
     const content = tabsBlock.querySelector(".tab-content");
+
+    if (!nav || !content) {
+      console.warn("Skipping tabsBlock — missing nav or content:", tabsBlock);
+      return;
+    }
 
     // Move buttons into nav
     tabsBlock.querySelectorAll(".tabs-block__button > button").forEach((btn) => {
@@ -27,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
       activeIndex = tabButtons.length - 1;
     }
 
-    if (tabButtons.length > 0) {
+    if (tabButtons.length > 0 && tabPanes.length > 0) {
       const activeBtn = tabButtons[activeIndex];
       const activePane = tabPanes[activeIndex];
 

@@ -4,7 +4,6 @@
   "title": "Tab Item",
   "parent": ["bootstrap-custom-theme/tabs"],
   "attributes": {
-    "tabId": { "type": "string" },
     "title": { "type": "string", "default": "Tab" },
     "customClass": { "type": "string", "default": "" },
     "customId": { "type": "string", "default": "" },

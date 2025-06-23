@@ -1,87 +1,111 @@
 import { __ } from "@wordpress/i18n";
-import {
-  PanelBody,
-  TextControl,
-  Button,
-  CheckboxControl,
-} from "@wordpress/components";
+import { PanelBody, TextControl, CheckboxControl } from "@wordpress/components";
 import {
   InspectorControls,
   useBlockProps,
   InnerBlocks,
 } from "@wordpress/block-editor";
 import { useEffect } from "@wordpress/element";
-import { useDispatch } from "@wordpress/data";
+import { useDispatch, useSelect } from "@wordpress/data";
+import { store as blockEditorStore } from "@wordpress/block-editor";
 
 const ALLOWED_BLOCKS = ["core/paragraph", "core/heading", "core/image"];
 
 const Edit = ({ attributes, setAttributes, clientId }) => {
-  const { title, customId } = attributes;
+  const { title, customId, isActive, customClass } = attributes;
+
   const { removeBlock } = useDispatch("core/block-editor");
+
+  // Check if block is selected or its inner content is selected
+  const { isSelected, hasSelectedInnerBlock, getSelectedBlockClientId } =
+    useSelect(
+      (select) => ({
+        isSelected: select(blockEditorStore).isBlockSelected(clientId),
+        hasSelectedInnerBlock: select(blockEditorStore).hasSelectedInnerBlock(
+          clientId,
+          true
+        ),
+        getSelectedBlockClientId:
+          select(blockEditorStore).getSelectedBlockClientId,
+      }),
+      [clientId]
+    );
+
+  const isActiveTab = isActive || isSelected || hasSelectedInnerBlock;
 
   useEffect(() => {
     if (!customId) {
-      setAttributes({ customId: `tab-${clientId.replace(/[^a-z0-9]/g, "")}` });
+      const safeId = `tab-${clientId.replace(/[^a-z0-9]/g, "")}`;
+      setAttributes({ customId: safeId });
     }
-  }, []);
+  }, [customId, clientId, setAttributes]);
 
   const handleRemove = () => {
-    removeBlock(clientId, true); // true to select previous block after removal
+    removeBlock(clientId, true);
   };
 
+  const blockProps = useBlockProps({
+    className: `tab-pane fade ${isActive ? "show active" : ""} ${
+      customClass || ""
+    }`,
+    id: customId,
+    role: "tabpanel",
+  });
+
   return (
-    <div {...useBlockProps()}>
-      <InspectorControls>
-        <PanelBody title={__("Tab Settings")}>
-          <TextControl
-            label={__("Tab Title")}
-            value={title}
-            onChange={(value) => setAttributes({ title: value })}
-          />
-          <TextControl
-            label={__("Tab ID")}
-            value={customId}
-            onChange={(value) => setAttributes({ customId: value })}
-          />
-        </PanelBody>
-        <CheckboxControl
-          label={__("Set this tab as active")}
-          checked={attributes.isActive}
-          onChange={(value) => setAttributes({ isActive: value })}
-        />
-      </InspectorControls>
+    <>
+      {isActiveTab && (
+        <>
+          <InspectorControls>
+            <PanelBody title={__("Tab Settings")} initialOpen={true}>
+              <TextControl
+                label={__("Tab Title")}
+                value={title}
+                onChange={(value) => setAttributes({ title: value })}
+              />
+              <TextControl
+                label={__("Tab ID")}
+                value={customId}
+                onChange={(value) => setAttributes({ customId: value })}
+                help={__("Used for linking tabs via Bootstrap.")}
+              />
+              <TextControl
+                label={__("Custom Class")}
+                value={customClass}
+                onChange={(value) => setAttributes({ customClass: value })}
+              />
+              <CheckboxControl
+                label={__("Set this tab as active")}
+                checked={isActive}
+                onChange={(value) => setAttributes({ isActive: value })}
+              />
+            </PanelBody>
+          </InspectorControls>
+          <div {...blockProps}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <strong>{title || __("New Tab")}</strong>
+              <button
+                onClick={handleRemove}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "red",
+                  cursor: "pointer",
+                }}
+                aria-label={__("Remove Tab")}
+              >
+                ✕
+              </button>
+            </div>
 
-      <div className="tab-content-wrapper">
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <button className="nav-link" data-bs-toggle="tab">
-            {title || __("New Tab")}
-          </button>
-          <button
-            onClick={handleRemove}
-            style={{
-              background: "none",
-              border: "none",
-              color: "red",
-              cursor: "pointer",
-            }}
-          >
-            ✕
-          </button>
-        </div>
-
-        <div className="tab-content-editor">
-          <InnerBlocks
-            template={[
-              [
-                "core/paragraph",
-                { placeholder: __("Tab content goes here...") },
-              ],
-            ]}
-            renderAppender={InnerBlocks.ButtonBlockAppender}
-          />
-        </div>
-      </div>
-    </div>
+            <InnerBlocks
+              allowedBlocks={["core/paragraph", "core/heading", "core/image"]}
+              renderAppender={InnerBlocks.ButtonBlockAppender}
+            />
+          </div>
+        </>
+      )}
+    </>
   );
 };
 

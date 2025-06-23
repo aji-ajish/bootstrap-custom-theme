@@ -1,21 +1,21 @@
 import { useBlockProps, InnerBlocks } from "@wordpress/block-editor";
 
 const Save = ({ attributes }) => {
-  const { customId, title } = attributes;
+  const { customId, title, isActive, customClass } = attributes;
 
   return (
     <>
       <div className="tabs-block__button">
         <button
-          className={`nav-link${attributes.isActive ? ' active' : ''}`}
+          className={`nav-link${isActive ? " active" : ""}`}
           id={`${customId}-tab`}
           data-bs-toggle="tab"
           data-bs-target={`#${customId}`}
           type="button"
           role="tab"
-          aria-selected={attributes.isActive ? 'true' : 'false'}
-    tabIndex={attributes.isActive ? undefined : '-1'}
-    data-active={attributes.isActive ? 'true' : 'false'}
+          aria-selected={isActive ? "true" : "false"}
+          tabIndex={isActive ? undefined : "-1"}
+          data-active={isActive ? "true" : "false"}
         >
           {title}
         </button>
@@ -23,7 +23,9 @@ const Save = ({ attributes }) => {
 
       <div className="tabs-block__pane">
         <div
-          className={`tab-pane fade${attributes.isActive ? ' show active' : ''}`}
+          className={`tab-pane fade${isActive ? " show active" : ""} ${
+            customClass || ""
+          }`.trim()}
           id={customId}
           role="tabpanel"
           aria-labelledby={`${customId}-tab`}
