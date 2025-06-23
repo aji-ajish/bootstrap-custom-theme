@@ -3,6 +3,7 @@
   "name": "bootstrap-custom-theme/accordion",
   "title": "Bootstrap Accordion",
   "category": "custom-blocks",
+  "icon": "list-view",
   "description": "A customizable Bootstrap accordion block",
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/index.css",

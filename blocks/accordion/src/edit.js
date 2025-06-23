@@ -19,8 +19,6 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
   const innerBlocks = getBlocks(clientId);
   const innerBlockIds = getBlockOrder(clientId);
   
-  console.log('Current blocks (objects):', innerBlocks);
-  console.log('Current block IDs:', innerBlockIds);
 
   // Initialize accordion
   useEffect(() => {
@@ -29,7 +27,6 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
     }
 
     if (innerBlocks.length === 0) {
-      console.log('Initializing first item');
       const firstBlock = createBlock("bootstrap-custom-theme/accordion-item", {
         title: "Accordion Item #1",
         isOpen: accordionType !== "always-open",
@@ -40,7 +37,6 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
   }, []);
 
   const addNewItem = async () => {
-    console.log('Attempting to add item...');
     
     try {
       // Create new item
@@ -50,11 +46,9 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
         itemId: `item-${Date.now()}`,
       });
 
-      console.log('Created block:', newItem);
 
       // Method 1: Try insertBlock first
       await insertBlock(newItem, innerBlocks.length, clientId);
-      console.log('insertBlock completed');
 
       // Force UI update if needed
       setForceUpdate(Date.now());
