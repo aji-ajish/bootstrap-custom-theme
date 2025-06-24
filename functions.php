@@ -82,6 +82,7 @@ function bootstrap_custom_theme_register_blocks()
     register_block_type_from_metadata(__DIR__ . '/blocks/tabs');
     register_block_type_from_metadata(__DIR__ . '/blocks/tabs/tab-item');
     register_block_type_from_metadata(__DIR__ . '/blocks/button');
+    register_block_type_from_metadata(__DIR__ . '/blocks/card');
 }
 add_action('init', 'bootstrap_custom_theme_register_blocks');
 

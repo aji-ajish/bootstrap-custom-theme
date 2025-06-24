@@ -73,7 +73,7 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
         </PanelBody>
       </InspectorControls>
 
-      <div className="accordion-item-editor">
+      <div className={`accordion-item `}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <button
             className={`accordion-button ${isOpen ? "" : "collapsed"}`}

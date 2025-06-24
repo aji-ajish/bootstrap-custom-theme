@@ -11,7 +11,8 @@
     "build:column": "wp-scripts build blocks/column/src/index.js --output-path=blocks/column/build",
     "build:accordion": "wp-scripts build blocks/accordion/src/index.js --output-path=blocks/accordion/build",
     "build:tabs": "wp-scripts build blocks/tabs/src/index.js --output-path=blocks/tabs/build",
-    "build:button": "wp-scripts build blocks/button/index.js --output-path=blocks/button/build"
+    "build:button": "wp-scripts build blocks/button/index.js --output-path=blocks/button/build",
+    "build:card": "wp-scripts build blocks/card/index.js --output-path=blocks/card/build"
   },
   "keywords": [],
   "author": "",

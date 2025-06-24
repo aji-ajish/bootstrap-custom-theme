@@ -88,7 +88,7 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
         </PanelBody>
       </InspectorControls>
 
-      <div className="accordion-editor-block">
+      <div className={`accordion ${accordionType} ${customId} ${customClass} px-3 py-1 border`}>
         <InnerBlocks
           allowedBlocks={ALLOWED_BLOCKS}
           templateLock={false}

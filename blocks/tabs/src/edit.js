@@ -189,7 +189,7 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
       {innerBlocks.length > 0 ? (
         <div
           className={classnames(
-            "tabs-editor-wrapper",
+            "px-2 py-3 tabs-block border",
             {
               "d-flex align-items-start": orientation === "vertical",
             },
@@ -212,12 +212,7 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
                 aria-selected={index === activeTabIndex}
               >
                 {block.attributes.title || __("New Tab")}
-                {block.attributes.isActive && (
-                  <span
-                    className="dashicons dashicons-edit"
-                    style={{ marginLeft: "5px" }}
-                  />
-                )}
+                
               </ToolbarButton>
             ))}
           </div>
