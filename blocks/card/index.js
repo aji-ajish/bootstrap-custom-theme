@@ -1,12 +1,9 @@
-import './style.scss'; // or css
-import CardEdit from './edit';
-import CardSave from './save';
-import metadata from './block.json';
+import { registerBlockType } from "@wordpress/blocks";
+import Edit from "./edit";
+import save from "./save";
+import "./style.css";
 
-import { registerBlockType } from '@wordpress/blocks';
-
-registerBlockType(metadata.name, {
-  ...metadata,
-  edit: CardEdit,
-  save: CardSave,
+registerBlockType("bootstrap-custom-theme/card", {
+  edit: Edit,
+  save,
 });

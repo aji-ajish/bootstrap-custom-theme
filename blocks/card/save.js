@@ -1,65 +1,22 @@
-import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
+import { useBlockProps, InnerBlocks } from "@wordpress/block-editor";
 
-const CardSave = ({ attributes }) => {
-  const {
-    customId,
-    customClass,
-    border,
-    background,
-    textColor,
-    width,
-    showHeader,
-    showFooter,
-    imagePosition,
-  } = attributes;
+export default function save({ attributes }) {
+  const { cardHeader, cardFooter, hasHeader, hasFooter, customClass, customId } = attributes;
 
-  const classes = [
-    'card',
-    border ? `border-${border}` : '',
-    background ? `bg-${background}` : '',
-    textColor ? `text-${textColor}` : '',
-    width ? `w-${width}` : '',
-    customClass || ''
-  ].filter(Boolean).join(' ');
 
   const blockProps = useBlockProps.save({
-    id: customId || undefined,
-    className: classes,
-  });
+  className: `card ${customClass || ""}`,
+  id: customId || undefined,
+});
+
 
   return (
     <div {...blockProps}>
-      {imagePosition === 'top' && (
-        <div className="card-img-top">
-          <InnerBlocks.Content />
-        </div>
-      )}
-
-      {showHeader && (
-        <div className="card-header">
-          <InnerBlocks.Content
-            __experimentalBlockLayout="header"
-          />
-        </div>
-      )}
-
+      {hasHeader && <div className="card-header">{cardHeader}</div>}
       <div className="card-body">
         <InnerBlocks.Content />
       </div>
-
-      {showFooter && (
-        <div className="card-footer">
-          <InnerBlocks.Content />
-        </div>
-      )}
-
-      {imagePosition === 'bottom' && (
-        <div className="card-img-bottom">
-          <InnerBlocks.Content />
-        </div>
-      )}
+      {hasFooter && <div className="card-footer">{cardFooter}</div>}
     </div>
   );
-};
-
-export default CardSave;
+}
