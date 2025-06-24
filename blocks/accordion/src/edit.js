@@ -1,6 +1,17 @@
+// File: themes/bootstrap-custom-theme/blocks/accordion/src/edit.js
+
 import { __ } from "@wordpress/i18n";
-import { PanelBody, Button, SelectControl, TextControl } from "@wordpress/components";
-import { useBlockProps, InspectorControls, InnerBlocks } from "@wordpress/block-editor";
+import {
+  PanelBody,
+  Button,
+  SelectControl,
+  TextControl,
+} from "@wordpress/components";
+import {
+  useBlockProps,
+  InspectorControls,
+  InnerBlocks,
+} from "@wordpress/block-editor";
 import { useSelect, useDispatch } from "@wordpress/data";
 import { createBlock } from "@wordpress/blocks";
 import { useEffect, useState } from "@wordpress/element";
@@ -9,21 +20,19 @@ const ALLOWED_BLOCKS = ["bootstrap-custom-theme/accordion-item"];
 
 const Edit = ({ attributes, setAttributes, clientId }) => {
   const { accordionType, customId, customClass } = attributes;
-  const [forceUpdate, setForceUpdate] = useState(0); // Force re-render
-  
-  // Get block editor data
-  const { getBlocks, getBlockOrder } = useSelect("core/block-editor");
-  const { insertBlock, replaceInnerBlocks } = useDispatch("core/block-editor");
 
-  // Get current blocks - using both methods for debugging
+  const [activeItemId, setActiveItemId] = useState(null);
+
+  const { getBlocks } = useSelect("core/block-editor");
+  const { replaceInnerBlocks } = useDispatch("core/block-editor");
+
   const innerBlocks = getBlocks(clientId);
-  const innerBlockIds = getBlockOrder(clientId);
-  
 
-  // Initialize accordion
   useEffect(() => {
     if (!customId) {
-      setAttributes({ customId: `accordion-${Math.random().toString(36).slice(2, 11)}` });
+      setAttributes({
+        customId: `accordion-${Math.random().toString(36).slice(2, 11)}`,
+      });
     }
 
     if (innerBlocks.length === 0) {
@@ -36,51 +45,17 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
     }
   }, []);
 
-  const addNewItem = async () => {
-    
-    try {
-      // Create new item
-      const newItem = createBlock("bootstrap-custom-theme/accordion-item", {
-        title: `Accordion Item #${innerBlocks.length + 1}`,
-        isOpen: accordionType === "always-open",
-        itemId: `item-${Date.now()}`,
-      });
-
-
-      // Method 1: Try insertBlock first
-      await insertBlock(newItem, innerBlocks.length, clientId);
-
-      // Force UI update if needed
-      setForceUpdate(Date.now());
-
-      // Fallback check after 500ms
-      setTimeout(() => {
-        const updatedBlocks = getBlocks(clientId);
-        if (!updatedBlocks.some(block => block.clientId === newItem.clientId)) {
-          console.warn('Block not inserted, trying replaceInnerBlocks');
-          replaceInnerBlocks(clientId, [...innerBlocks, newItem]);
-        }
-      }, 500);
-
-    } catch (error) {
-      console.error('Failed to add item:', error);
-      // Final fallback - direct DOM manipulation (last resort)
-      const fallbackAdd = () => {
-        const container = document.querySelector(`[data-block="${clientId}"] .block-editor-inner-blocks`);
-        if (container) {
-          container.insertAdjacentHTML('beforeend', `
-            <div data-block="${newItem.clientId}" class="wp-block bootstrap-custom-theme-accordion-item">
-              [Accordion Item - please save and refresh]
-            </div>
-          `);
-        }
-      };
-      fallbackAdd();
-    }
+  const addNewItem = () => {
+    const newItem = createBlock("bootstrap-custom-theme/accordion-item", {
+      title: `Accordion Item #${innerBlocks.length + 1}`,
+      isOpen: accordionType === "always-open",
+      itemId: `item-${Date.now()}`,
+    });
+    replaceInnerBlocks(clientId, [...innerBlocks, newItem]);
   };
 
   return (
-    <div {...useBlockProps({ key: forceUpdate })}> {/* Force re-render */}
+    <div {...useBlockProps()}>
       <InspectorControls>
         <PanelBody title={__("Accordion Settings")}>
           <SelectControl
@@ -113,15 +88,13 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
         </PanelBody>
       </InspectorControls>
 
-      {/* Visual debug area */}
-      
-
-      <InnerBlocks
-        allowedBlocks={ALLOWED_BLOCKS}
-        renderAppender={false}
-        orientation="vertical"
-        templateLock={false}
-      />
+      <div className="accordion-editor-block">
+        <InnerBlocks
+          allowedBlocks={ALLOWED_BLOCKS}
+          templateLock={false}
+          orientation="vertical"
+        />
+      </div>
     </div>
   );
 };

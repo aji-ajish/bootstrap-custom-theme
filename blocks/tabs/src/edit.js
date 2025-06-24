@@ -4,6 +4,7 @@ import {
   PanelBody,
   SelectControl,
   TextControl,
+  CheckboxControl,
   ToolbarButton,
 } from "@wordpress/components";
 import {
@@ -22,15 +23,29 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
   const { orientation, tabStyle, customClass, customId } = attributes;
 
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [editingTabId, setEditingTabId] = useState(null);
 
-  const { replaceInnerBlocks } = useDispatch("core/block-editor");
+  const { replaceInnerBlocks, removeBlock } = useDispatch("core/block-editor");
 
   const innerBlocks = useSelect(
     (select) => select("core/block-editor").getBlocks(clientId),
     [clientId]
   );
 
+  // Add first tab automatically
+  useEffect(() => {
+    if (innerBlocks.length === 0) {
+      const newCustomId = `tab-1-${Date.now()}`;
+      const newTab = createBlock("bootstrap-custom-theme/tab-item", {
+        title: "Tab 1",
+        customId: newCustomId,
+        isActive: true,
+      });
+      replaceInnerBlocks(clientId, [newTab], false);
+      setActiveTabIndex(0);
+    }
+  }, [innerBlocks.length]);
+
+  // Sync active tab state
   useEffect(() => {
     if (activeTabIndex >= innerBlocks.length && innerBlocks.length > 0) {
       setActiveTabIndex(innerBlocks.length - 1);
@@ -41,10 +56,7 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
 
   const addNewTab = () => {
     const newTabTitle = `Tab ${innerBlocks.length + 1}`;
-    const newCustomId = `tab-${clientId.replace(
-      /[^a-z0-9]/g,
-      ""
-    )}-${Date.now()}`;
+    const newCustomId = `tab-${innerBlocks.length + 1}-${Date.now()}`;
 
     const newTab = createBlock("bootstrap-custom-theme/tab-item", {
       title: newTabTitle,
@@ -53,42 +65,28 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
     });
 
     const updatedInnerBlocks = innerBlocks.map((block) =>
-      createBlock(
-        block.name,
-        { ...block.attributes, isActive: false },
-        block.innerBlocks
-      )
+      createBlock(block.name, { ...block.attributes, isActive: false }, block.innerBlocks)
     );
 
     replaceInnerBlocks(clientId, [...updatedInnerBlocks, newTab]);
-    setEditingTabId(newTab.clientId);
     setActiveTabIndex(innerBlocks.length);
   };
 
   const handleTabClick = (index) => {
     setActiveTabIndex(index);
-    setEditingTabId(innerBlocks[index]?.clientId || null);
     const updatedBlocks = innerBlocks.map((block, i) =>
-      createBlock(
-        block.name,
-        {
-          ...block.attributes,
-          isActive: i === index,
-        },
-        block.innerBlocks
-      )
+      createBlock(block.name, {
+        ...block.attributes,
+        isActive: i === index,
+      }, block.innerBlocks)
     );
     replaceInnerBlocks(clientId, updatedBlocks);
   };
 
-  const handleTabUpdate = (newAttributes) => {
+  const handleTabUpdate = (newAttributes, targetClientId) => {
     const updatedBlocks = innerBlocks.map((block) =>
-      block.clientId === editingTabId
-        ? createBlock(
-            block.name,
-            { ...block.attributes, ...newAttributes },
-            block.innerBlocks
-          )
+      block.clientId === targetClientId
+        ? createBlock(block.name, { ...block.attributes, ...newAttributes }, block.innerBlocks)
         : block
     );
     replaceInnerBlocks(clientId, updatedBlocks);
@@ -97,19 +95,10 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
   const getTabClass = (index) =>
     classnames("nav-link", {
       active: index === activeTabIndex,
-      "is-being-edited": innerBlocks[index]?.clientId === editingTabId,
+      "is-being-edited": innerBlocks[index]?.attributes?.isActive,
     });
 
-  const getPaneClass = (index) =>
-    classnames("tab-pane", "fade", {
-      "show active": index === activeTabIndex,
-    });
-
-  const editedTab = innerBlocks.find(
-    (block) => block.clientId === editingTabId
-  );
-
-  
+  const activeTab = innerBlocks.find((block) => block.attributes?.isActive);
 
   return (
     <div {...useBlockProps()}>
@@ -151,6 +140,50 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
             {__("Add New Tab")}
           </Button>
         </PanelBody>
+
+        {activeTab && (
+          <PanelBody title={__("Current Tab Settings")} initialOpen={true}>
+            <TextControl
+              label={__("Tab Title")}
+              value={activeTab.attributes.title}
+              onChange={(value) =>
+                handleTabUpdate({ title: value }, activeTab.clientId)
+              }
+            />
+            <TextControl
+              label={__("Tab ID")}
+              value={activeTab.attributes.customId}
+              onChange={(value) =>
+                handleTabUpdate({ customId: value }, activeTab.clientId)
+              }
+            />
+            <TextControl
+              label={__("Custom Class")}
+              value={activeTab.attributes.customClass}
+              onChange={(value) =>
+                handleTabUpdate({ customClass: value }, activeTab.clientId)
+              }
+            />
+            <CheckboxControl
+              label={__("Set this tab as active")}
+              checked={activeTab.attributes.isActive}
+              onChange={(value) =>
+                handleTabUpdate({ isActive: value }, activeTab.clientId)
+              }
+            />
+            <Button
+              isDestructive
+              variant="secondary"
+              onClick={() => {
+                removeBlock(activeTab.clientId, true);
+                setActiveTabIndex(0);
+              }}
+              style={{ marginTop: "10px" }}
+            >
+              {__("Remove This Tab")}
+            </Button>
+          </PanelBody>
+        )}
       </InspectorControls>
 
       {innerBlocks.length > 0 ? (
@@ -179,7 +212,7 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
                 aria-selected={index === activeTabIndex}
               >
                 {block.attributes.title || __("New Tab")}
-                {block.clientId === editingTabId && (
+                {block.attributes.isActive && (
                   <span
                     className="dashicons dashicons-edit"
                     style={{ marginLeft: "5px" }}

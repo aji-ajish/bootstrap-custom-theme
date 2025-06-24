@@ -61,22 +61,20 @@ const Edit = ({ attributes, setAttributes, clientId }) => {
             value={customClass}
             onChange={(value) => setAttributes({ customClass: value })}
           />
+          <Button
+            onClick={handleRemove}
+            style={{
+              background: "red",
+              color: "#fff",
+            }}
+          >
+            Remove
+          </Button>
         </PanelBody>
       </InspectorControls>
 
       <div className="accordion-item-editor">
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <button
-            onClick={handleRemove}
-            style={{
-              background: "none",
-              border: "1px solid red",
-              color: "red",
-              cursor: "pointer",
-            }}
-          >
-            ✕
-          </button>
           <button
             className={`accordion-button ${isOpen ? "" : "collapsed"}`}
             type="button"
