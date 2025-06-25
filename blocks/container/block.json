@@ -1,29 +1,64 @@
 {
-    "apiVersion": 2,
-    "name": "bootstrap-custom-theme/container",
-    "title": "Bootstrap Container",
-    "category": "custom-blocks",
-    "icon": "layout",
-    "description": "A responsive Bootstrap container block.",
-    "textdomain": "bootstrap-custom-theme",
-    "attributes": {
-      "containerType": {
-        "type": "string",
-        "default": "container"
-      },
-      "customClass": {
-        "type": "string",
-        "default": ""
-      },
-      "sectionClass": {
-        "type": "string",
-        "default": ""
-      }
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/container",
+  "title": "Bootstrap Container",
+  "category": "custom-blocks",
+  "icon": "layout",
+  "description": "A responsive Bootstrap container block.",
+  "textdomain": "bootstrap-custom-theme",
+  "attributes": {
+    "containerType": {
+      "type": "string",
+      "default": "container"
     },
-    "supports": {
-      "html": false
+    "customClass": {
+      "type": "string",
+      "default": ""
     },
-    "editorScript": "file:./build/index.js",
-    "style": "file:./build/style-index.css"
-  }
-  
+    "sectionClass": {
+      "type": "string",
+      "default": ""
+    },
+    "backgroundType": {
+      "type": "string",
+      "default": "none"
+    },
+    "bgColor": {
+      "type": "string",
+      "default": ""
+    },
+    "bgImage": {
+      "type": "string",
+      "default": ""
+    },
+    "bgVideo": {
+      "type": "string",
+      "default": ""
+    },
+    "bgVideoDesktop": {
+      "type": "string",
+      "default": ""
+    },
+    "bgVideoMobile": {
+      "type": "string",
+      "default": ""
+    },
+    "disclaimerText": {
+      "type": "string",
+      "default": ""
+    },
+    "disclaimerClass": {
+      "type": "string",
+      "default": "disclaimer"
+    },
+    "backgroundWrapperClass": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style-index.css"
+}
