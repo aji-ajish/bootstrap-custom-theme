@@ -26,6 +26,14 @@ function bootstrap_custom_theme_enqueue_scripts()
         null,
         true
     );
+
+    wp_enqueue_script(
+        'custom-carousel-frontend',
+        get_template_directory_uri() . '/assets/js/carousel.js',
+        array('bootstrap-js'), // Depends on Bootstrap
+        null,
+        true
+    );
 }
 add_action('wp_enqueue_scripts', 'bootstrap_custom_theme_enqueue_scripts');
 
@@ -83,6 +91,8 @@ function bootstrap_custom_theme_register_blocks()
     register_block_type_from_metadata(__DIR__ . '/blocks/tabs/tab-item');
     register_block_type_from_metadata(__DIR__ . '/blocks/button');
     register_block_type_from_metadata(__DIR__ . '/blocks/card');
+    register_block_type_from_metadata(__DIR__ . '/blocks/carousel');
+    register_block_type_from_metadata(__DIR__ . '/blocks/carousel/carousel-item');
 }
 add_action('init', 'bootstrap_custom_theme_register_blocks');
 

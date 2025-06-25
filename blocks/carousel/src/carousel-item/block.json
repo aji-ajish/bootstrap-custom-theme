@@ -1,0 +1,41 @@
+{
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/carousel-item",
+  "title": "Carousel Slide",
+  "parent": ["bootstrap-custom-theme/carousel"],
+  "category": "design",
+  "attributes": {
+    "slideId": {
+      "type": "string",
+      "default": ""
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": false
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "captionHeading": {
+      "type": "string",
+      "default": ""
+    },
+    "captionText": {
+      "type": "string",
+      "default": ""
+    },
+    "showCaption": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": false
+  }
+}

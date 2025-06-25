@@ -1,0 +1,25 @@
+.carousel {
+  .carousel-item-editor {
+    position: relative;
+    
+    .carousel-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.5);
+      padding: 10px 20px;
+      border-radius: 4px;
+      color: white;
+      text-align: center;
+      
+      h5 {
+        margin-bottom: 0.5rem;
+      }
+      
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

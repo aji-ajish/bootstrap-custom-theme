@@ -1,0 +1,49 @@
+{
+  "apiVersion": 2,
+  "name": "bootstrap-custom-theme/carousel",
+  "title": "Bootstrap Carousel",
+  "category": "design",
+  "icon": "slides",
+  "description": "Responsive Bootstrap carousel with multiple slides.",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/index.css",
+  "style": "file:./build/style-index.css",
+  "attributes": {
+    "carouselId": {
+      "type": "string",
+      "default": ""
+    },
+    "showControls": {
+      "type": "boolean",
+      "default": true
+    },
+    "showIndicators": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "interval": {
+      "type": "number",
+      "default": 5000
+    },
+    "fade": {
+      "type": "boolean",
+      "default": false
+    },
+    "darkVariant": {
+      "type": "boolean",
+      "default": false
+    },
+    "refresh": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": false
+  }
+}
