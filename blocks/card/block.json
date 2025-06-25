@@ -10,31 +10,44 @@
     "className": false
   },
   "attributes": {
-    "cardHeader": {
-      "type": "string",
-      "default": "Card Header"
-    },
-    "cardFooter": {
-      "type": "string",
-      "default": ""
-    },
-    "hasHeader": {
-      "type": "boolean",
-      "default": true
-    },
-    "hasFooter": {
-      "type": "boolean",
-      "default": false
-    },
-    "customClass": {
-      "type": "string",
-      "default": ""
-    },
-    "customId": {
-      "type": "string",
-      "default": ""
-    }
+  "cardHeader": {
+    "type": "string",
+    "default": "Card Header"
   },
+  "cardFooter": {
+    "type": "string",
+    "default": ""
+  },
+  "hasHeader": {
+    "type": "boolean",
+    "default": true
+  },
+  "hasFooter": {
+    "type": "boolean",
+    "default": false
+  },
+  "customClass": {
+    "type": "string",
+    "default": ""
+  },
+  "customId": {
+    "type": "string",
+    "default": ""
+  },
+  "headerClass": {
+    "type": "string",
+    "default": ""
+  },
+  "bodyClass": {
+    "type": "string",
+    "default": ""
+  },
+  "footerClass": {
+    "type": "string",
+    "default": ""
+  }
+}
+,
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/editor.css",
   "style": "file:./build/style.css"
