@@ -280,11 +280,14 @@ export default function Edit({
                 options={containerOptions}
                 onChange={(value) => setAttributes({ containerType: value })}
               />
-              <TextControl
-                label="Custom Container Class"
-                value={customClass}
-                onChange={(value) => setAttributes({ customClass: value })}
-              />
+
+              {containerType !== "none" && (
+                <TextControl
+                  label="Custom Container Class"
+                  value={customClass}
+                  onChange={(value) => setAttributes({ customClass: value })}
+                />
+              )}
               <TextControl
                 label="Parent Div Class"
                 value={sectionClass}
