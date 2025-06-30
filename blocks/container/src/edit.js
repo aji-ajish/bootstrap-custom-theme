@@ -15,6 +15,7 @@ import {
 } from "@wordpress/components";
 
 const containerOptions = [
+  { label: "None", value: "none" },
   { label: "container", value: "container" },
   { label: "container-sm", value: "container-sm" },
   { label: "container-md", value: "container-md" },
@@ -24,7 +25,12 @@ const containerOptions = [
   { label: "container-fluid", value: "container-fluid" },
 ];
 
-export default function Edit({ attributes, setAttributes, isSelected, clientId }) {
+export default function Edit({
+  attributes,
+  setAttributes,
+  isSelected,
+  clientId,
+}) {
   const {
     containerType,
     customClass,
@@ -108,7 +114,8 @@ export default function Edit({ attributes, setAttributes, isSelected, clientId }
 
   const sectionStyle = {
     backgroundColor: backgroundType === "color" ? bgColor : undefined,
-    backgroundImage: backgroundType === "image" && bgImage ? `url(${bgImage})` : undefined,
+    backgroundImage:
+      backgroundType === "image" && bgImage ? `url(${bgImage})` : undefined,
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
@@ -135,14 +142,21 @@ export default function Edit({ attributes, setAttributes, isSelected, clientId }
                 bgImage: "",
                 bgVideoDesktop: "",
                 bgVideoMobile: "",
-                backgroundWrapperClass: value === "video" ? "bg _video" : value === "image" ? "bg _image" : "",
+                backgroundWrapperClass:
+                  value === "video"
+                    ? "bg _video"
+                    : value === "image"
+                    ? "bg _image"
+                    : "",
               });
             }}
           />
 
           {backgroundType === "color" && (
             <div style={{ marginTop: "1rem" }}>
-              <p><strong>Background Color</strong></p>
+              <p>
+                <strong>Background Color</strong>
+              </p>
               <ColorPalette
                 value={bgColor}
                 onChange={(value) => setAttributes({ bgColor: value })}
@@ -152,12 +166,18 @@ export default function Edit({ attributes, setAttributes, isSelected, clientId }
 
           {backgroundType === "image" && (
             <div style={{ marginTop: "1rem" }}>
-              <p><strong>Background Image</strong></p>
+              <p>
+                <strong>Background Image</strong>
+              </p>
               {bgImage && (
                 <img
                   src={bgImage}
                   alt="Background preview"
-                  style={{ maxWidth: "100%", height: "auto", marginBottom: "8px" }}
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto",
+                    marginBottom: "8px",
+                  }}
                 />
               )}
               <MediaUpload
@@ -202,7 +222,9 @@ export default function Edit({ attributes, setAttributes, isSelected, clientId }
               <TextControl
                 label="Background Wrapper Class"
                 value={backgroundWrapperClass}
-                onChange={(value) => setAttributes({ backgroundWrapperClass: value })}
+                onChange={(value) =>
+                  setAttributes({ backgroundWrapperClass: value })
+                }
               />
               <TextControl
                 label="Disclaimer Text"
@@ -219,10 +241,19 @@ export default function Edit({ attributes, setAttributes, isSelected, clientId }
         </PanelBody>
       </InspectorControls>
 
-      <div {...blockProps} style={{ position: "relative" }} data-block-id={clientId}>
+      <div
+        {...blockProps}
+        style={{ position: "relative" }}
+        data-block-id={clientId}
+      >
         <Button
           variant="secondary"
-          style={{ position: "absolute", top: "0px", right: "-40px", zIndex: 10 }}
+          style={{
+            position: "absolute",
+            top: "0px",
+            right: "-40px",
+            zIndex: 10,
+          }}
           onClick={() => setShowPopup(true)}
         >
           ⚙️
@@ -239,7 +270,9 @@ export default function Edit({ attributes, setAttributes, isSelected, clientId }
               zIndex: 99999,
             }}
           >
-            <div className="popup-header"><strong>Configure Container</strong></div>
+            <div className="popup-header">
+              <strong>Configure Container</strong>
+            </div>
             <div style={{ padding: "15px" }}>
               <SelectControl
                 label="Container Type"
@@ -253,23 +286,31 @@ export default function Edit({ attributes, setAttributes, isSelected, clientId }
                 onChange={(value) => setAttributes({ customClass: value })}
               />
               <TextControl
-                label="Section Class"
+                label="Parent Div Class"
                 value={sectionClass}
                 onChange={(value) => setAttributes({ sectionClass: value })}
               />
               <div className="popup-actions">
-                <Button variant="primary" onClick={() => setShowPopup(false)}>Save</Button>
-                <Button variant="secondary" onClick={() => setShowPopup(false)}>Close</Button>
+                <Button variant="primary" onClick={() => setShowPopup(false)}>
+                  Save
+                </Button>
+                <Button variant="secondary" onClick={() => setShowPopup(false)}>
+                  Close
+                </Button>
               </div>
             </div>
           </div>
         )}
 
-        <section className={sectionClass} style={sectionStyle}>
-          <div className={`${containerType} ${customClass}`}>
+        <div className={sectionClass} style={sectionStyle}>
+          {containerType !== "none" ? (
+            <div className={`${containerType} ${customClass}`}>
+              <InnerBlocks />
+            </div>
+          ) : (
             <InnerBlocks />
-          </div>
-        </section>
+          )}
+        </div>
       </div>
     </>
   );
